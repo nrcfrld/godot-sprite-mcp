@@ -78,7 +78,11 @@ def building_sockets(wall, roof):
 
 
 def attach_tower(side, socket, wall, building, tower_wall, tower):
-    """Dock outside the roof and connect to the wall below the eaves."""
+    """Dock outside the roof and connect to the wall below the eaves.
+
+    The wing socket is slid along the wall and pushed outward until the tower clears the
+    building (roof overhangs, windows); the final placement goes through attach_to_side()
+    so the tower's inward bounding-box face meets that exterior socket."""
     left = side == "left"
 
     # Try the socket depth first, then neighboring bays on that same wall.
@@ -103,8 +107,9 @@ def attach_tower(side, socket, wall, building, tower_wall, tower):
             continue
         wall_contact = socket.x - (tower_wall.high.x if left else tower_wall.low.x)
         limits.append(wall_contact)
-        anchor_x = min(limits) - 0.015 if left else max(limits) + 0.015
-        translation = Point(anchor_x, 0, dz)
+        offset = min(limits) - 0.015 if left else max(limits) + 0.015
+        dock = Point(offset + (tower_wall.high.x if left else tower_wall.low.x), 0, depth)
+        translation = attach_to_side(tower_wall, dock, side)
         inner_wall = translation.x + (tower_wall.high.x if left else tower_wall.low.x)
         a, b = sorted((inner_wall, socket.x))
         base = wall.low.y + wall.size.y * 0.39

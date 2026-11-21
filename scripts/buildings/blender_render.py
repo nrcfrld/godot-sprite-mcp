@@ -4,17 +4,9 @@ import random
 import bpy
 from mathutils import Vector
 
+from core.painted_materials import PLASTER, STONE, TIMBER, painted_material
+
 rng = random.Random(114)
-
-def material(name, color, roughness=0.85):
-    mat = bpy.data.materials.new(name)
-    mat.diffuse_color = (*color, 1)
-    mat.use_nodes = True
-    shader = mat.node_tree.nodes.get("Principled BSDF")
-    shader.inputs["Base Color"].default_value = (*color, 1)
-    shader.inputs["Roughness"].default_value = roughness
-    return mat
-
 
 def finish(obj, name, mat, bevel=0):
     obj.name = name
@@ -57,8 +49,8 @@ def prism(name, front, offset, mat):
     return finish(obj, name, mat)
 
 
-plaster = material("Ivory plaster", (0.81, 0.65, 0.40))
-cedar = material("Golden cedar", (0.43, 0.22, 0.093))
-darkwood = material("Dark oiled wood", (0.20, 0.084, 0.038))
-slate = material("Stone paving", (0.34, 0.38, 0.32))
-stones = [material("Fieldstone %d" % i, c) for i, c in enumerate([(0.32,0.37,0.32),(0.41,0.43,0.36),(0.29,0.32,0.29),(0.46,0.45,0.37)])]
+plaster = painted_material("Ivory plaster", (0.81, 0.65, 0.40), PLASTER)
+cedar = painted_material("Golden cedar", (0.43, 0.22, 0.093), TIMBER)
+darkwood = painted_material("Dark oiled wood", (0.20, 0.084, 0.038), TIMBER)
+slate = painted_material("Stone paving", (0.34, 0.38, 0.32), STONE)
+stones = [painted_material("Fieldstone %d" % i, c, STONE) for i, c in enumerate([(0.32,0.37,0.32),(0.41,0.43,0.36),(0.29,0.32,0.29),(0.46,0.45,0.37)])]

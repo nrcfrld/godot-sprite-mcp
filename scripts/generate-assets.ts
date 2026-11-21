@@ -10,7 +10,6 @@ import { buildings } from "./art/buildings.ts";
 import { renderArtSet, type ArtSet } from "./art/canvas.ts";
 import { characters } from "./art/characters.ts";
 import { scenery } from "./art/scenery.ts";
-import { renderVillage } from "./art/village.ts";
 
 const ART: Record<string, ArtSet<any>> = { characters, buildings, scenery };
 
@@ -18,7 +17,7 @@ const root = defaultAssetRoot();
 for (const id of listLibraries(root)) {
   const art = ART[id];
   if (id === "village") {
-    for (const file of renderVillage(root)) console.log(`wrote ${file}`);
+    console.log("skip village: rendered with Blender, run `bun run generate:village`");
   } else if (!art) {
     console.log(`skip ${id}: no generator`);
   } else {

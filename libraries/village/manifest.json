@@ -1,10 +1,10 @@
 {
   "kind": "props",
-  "pixelArt": true,
+  "pixelArt": false,
   "categories": [
-    { "id": "tiles", "folder": "tiles", "description": "Seamless 16×16 ground tiles" },
+    { "id": "tiles", "folder": "tiles", "description": "Seamless 128×128 ground tiles" },
     { "id": "backdrop", "folder": "backdrop", "description": "Horizontally repeating backdrop strips" },
-    { "id": "buildings", "folder": "buildings", "description": "Freestanding village buildings" },
-    { "id": "foliage", "folder": "foliage", "description": "Trees and shrubs" }
+    { "id": "buildings", "folder": "buildings", "description": "Blender-rendered village buildings (shared camera and sun)", "contactShadow": true },
+    { "id": "foliage", "folder": "foliage", "description": "Blender-rendered trees, shrubs and rocks", "contactShadow": true }
   ]
 }

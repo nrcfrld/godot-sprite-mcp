@@ -9,6 +9,7 @@ The same inputs produce byte-identical PNGs, SpriteFrames resources (`.tres`), a
 bun install
 bun test                 # unit + MCP integration tests
 bun run generate:assets  # (re)draw the procedural placeholder libraries — deterministic
+bun run generate:village # re-render the village props with Blender (pinned version, see below)
 ```
 
 ## Connect an MCP client
@@ -65,7 +66,12 @@ should return the available asset libraries and sprite parts.
 Set `GODOT_SPRITE_ASSETS_ROOT` in the server environment (or append `--assets` and an
 absolute directory path to the server arguments) to use a different asset library.
 The building generation tools require Blender. If the server cannot find Blender,
-set `BLENDER_BIN` to its executable path. In Codex and Claude Code, pass
+set `BLENDER_BIN` to its executable path. A Blender run that exceeds `BLENDER_TIMEOUT_MS` (default 600000, i.e. 10 minutes)
+is killed and reported as `BLENDER_TIMEOUT`. Renders are pinned to Blender 5.2 (Cycles on CPU, fixed seed, CPU
+denoiser) so the same input gives pixel-identical sprites; another version fails with `BLENDER_VERSION_MISMATCH`
+unless `GODOT_SPRITE_ALLOW_ANY_BLENDER=1` is set (output may then differ from the reference renders). All meshes use painted procedural materials under a crisp,
+contrasted light rig; the "Render Quality" rules in `AGENTS.md` (checked by `tests/render-quality.test.ts`) keep renders from
+looking like clay or plastic. In Codex and Claude Code, pass
 `--env "BLENDER_BIN=/absolute/path/to/blender"` before `--` in the registration command.
 In Antigravity, add `"env": { "BLENDER_BIN": "/absolute/path/to/blender" }` inside the
 `godot-sprite` object.
@@ -81,7 +87,7 @@ individual PNGs for composing scenes. Use `library` (CLI: `--library`) to select
 | `hd_creatures` | HD 2D (vector, soft edges) | 256×368, 42 frames: idle, walk, roll, jump, fall, hit, death | [rgsdev modular animated characters](https://opengameart.org/content/free-cc0-modular-animated-vector-characters-2d) | CC0 |
 | `lpc_male`, `lpc_female` | Modern pixel art, 4 directions | 64×64: idle, walk, run, slash, spellcast (×4 dirs), hurt | [Universal LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator) | OGA-BY / CC-BY / CC0 — attribution required, auto-generated |
 | `characters`, `buildings`, `scenery` | Procedural placeholders | 48 / 96 / 64 px | `scripts/art/` | — |
-| `village` | Procedural scene props | Individual PNGs | `scripts/art/village.ts` | — |
+| `village` | Blender-rendered scene props (buildings, trees, shrubs, rocks) + HD tiles | Individual PNGs | `scripts/buildings/village.ts` (`bun run generate:village`) | — |
 
 **Cinematic pixel art** = any library + `normalMap: true` (or the `generate_normal_map` tool). The `.tres` then
 uses a `CanvasTexture` with the normal map, so `PointLight2D` / `DirectionalLight2D` shade the sprite. Pair it with
@@ -179,20 +185,29 @@ bun src/cli.ts normalize --in raw.png --out clean.png --width 48 --height 48 --p
 
 Run `bun src/cli.ts list-props` to see the default `village` props. Save a scene specification as
 `scene.json` and run `bun src/cli.ts compose-scene --in scene.json`. Use `--out` to override the output directory.
+Scenes are limited to 4096×4096 px; `normalize_pixel_art` and `generate_normal_map` likewise refuse images or
+targets larger than 4096 px per side. All tools that write files are annotated as destructive, so MCP clients
+ask before overwriting. Through MCP, `outputDir`/`outputPath` must be absolute paths (the CLI still accepts
+relative ones), image tools only write `.png` files and never overwrite a non-PNG file, and setting
+`GODOT_SPRITE_OUTPUT_ROOTS` (e.g. to your Godot project folder; separate several with `:`) confines every write to
+those folders, symlinks included.
 
 ```json
 {
   "name": "village_square",
   "outputDir": "../my-game/maps",
-  "width": 256,
-  "height": 160,
-  "sky": { "top": "#87b8d8", "bottom": "#d9ece3" },
-  "ground": { "tiles": ["grass", "grass_flowers"], "weights": [5, 1], "y": 52 },
-  "layers": [{ "prop": "hills", "x": 8, "y": 52, "repeat": "x" }],
+  "width": 1280,
+  "height": 720,
+  "sky": { "top": "#8fc3e8", "bottom": "#dcefd8" },
+  "ground": { "tiles": ["grass", "grass_flowers"], "weights": [4, 1], "y": 170 },
+  "layers": [{ "prop": "hills", "x": 0, "y": 200, "repeat": "x" }],
   "placements": [
-    { "prop": "tavern", "x": 128, "y": 122 },
-    { "prop": "apple_tree", "x": 69, "y": 139, "flip": true },
-    { "prop": "bush", "x": 186, "y": 145 }
+    { "prop": "church", "x": 330, "y": 470 },
+    { "prop": "tavern", "x": 760, "y": 560 },
+    { "prop": "cottage", "x": 1110, "y": 430 },
+    { "prop": "apple_tree", "x": 150, "y": 660, "flip": true },
+    { "prop": "pine_tree", "x": 70, "y": 330 },
+    { "prop": "bush", "x": 480, "y": 610 }
   ],
   "normalMap": true
 }

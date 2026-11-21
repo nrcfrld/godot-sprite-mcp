@@ -11,6 +11,7 @@ import assemble
 from assemble import bounds, capture, sprite_point
 from blender_render import bpy, box, cedar
 from church import nave
+from core.constants import GLOBAL_DOOR_HEIGHT
 from core.scene_setup import ORTHOGRAPHIC_SCALE, configure_sprite_scene, render_sprite
 from inn import inn, taproom_kegs
 from inn_interior import DECK, floor_plan
@@ -46,9 +47,9 @@ def audit_scale(output):
         })
         if name == "kegs":
             render_sprite(output / "kegs.png", scene)
-    assert report[0]["boundsHeight"] == report[1]["boundsHeight"] == 2.05, report
+    assert report[0]["boundsHeight"] == report[1]["boundsHeight"] == GLOBAL_DOOR_HEIGHT, report
     assert abs(report[0]["projectedHeightPixels"] - report[1]["projectedHeightPixels"]) < 0.001, report
-    assert 0.30 < report[2]["boundsHeight"] / 2.05 < 0.40, report
+    assert 0.30 < report[2]["boundsHeight"] / GLOBAL_DOOR_HEIGHT < 0.40, report
 
     reset()
     scene = configure_sprite_scene()

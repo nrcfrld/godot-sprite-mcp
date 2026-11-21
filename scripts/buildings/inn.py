@@ -2,11 +2,12 @@
 
 import math
 
-from blender_render import beam, box, bpy, cedar, darkwood, material, plaster, prism, rng, slate, stones
+from blender_render import beam, box, bpy, cedar, darkwood, plaster, prism, rng, slate, stones
 from core.constants import (
     GLOBAL_DOOR_HEIGHT, GLOBAL_PLINTH_HEIGHT, INN_DEPTH, INN_GUEST_FLOOR_HEIGHT,
     INN_ROOF_PITCH, INN_TAPROOM_HEIGHT, INN_WIDTH,
 )
+from core.painted_materials import PIGMENT, ROOF, TEXTILE, TIMBER, painted_material
 
 FRONT = -INN_DEPTH / 2
 GROUND = GLOBAL_PLINTH_HEIGHT
@@ -19,17 +20,17 @@ BAR_X = -1.14
 BAR_WIDTH = 3.36
 BAR_SILL = GROUND + 0.92
 
-pine = material("Inn shutters", (0.095, 0.22, 0.19))
-amber = material("Warm room windows", (0.74, 0.37, 0.11))
-brass = material("Tavern brass", (0.60, 0.35, 0.095), 0.42)
-cloth = material("Claret awning", (0.42, 0.082, 0.068))
-cream = material("Cream awning", (0.84, 0.65, 0.41))
-shadow = material("Bar interior", (0.12, 0.064, 0.038))
-carved_lid = material("Keg lid end grain", (0.50, 0.30, 0.149))
-bottles = [material("Bottle " + name, color, 0.31) for name, color in [
+pine = painted_material("Inn shutters", (0.095, 0.22, 0.19), PIGMENT)
+amber = painted_material("Warm room windows", (0.74, 0.37, 0.11), PIGMENT, glossy=True)
+brass = painted_material("Tavern brass", (0.60, 0.35, 0.095), PIGMENT, glossy=True)
+cloth = painted_material("Claret awning", (0.42, 0.082, 0.068), TEXTILE)
+cream = painted_material("Cream awning", (0.84, 0.65, 0.41), TEXTILE)
+shadow = painted_material("Bar interior", (0.12, 0.064, 0.038), TIMBER)
+carved_lid = painted_material("Keg lid end grain", (0.50, 0.30, 0.149), TIMBER)
+bottles = [painted_material("Bottle " + name, color, PIGMENT, glossy=True) for name, color in [
     ("green", (0.16, 0.30, 0.13)), ("blue", (0.10, 0.26, 0.34)), ("amber", (0.5, 0.24, 0.075)),
 ]]
-tiles = [material("Glazed roof tile " + str(i), color) for i, color in enumerate([
+tiles = [painted_material("Glazed roof tile " + str(i), color, ROOF) for i, color in enumerate([
     (0.105, 0.23, 0.22), (0.125, 0.28, 0.25), (0.15, 0.31, 0.28), (0.12, 0.25, 0.25),
 ])]
 

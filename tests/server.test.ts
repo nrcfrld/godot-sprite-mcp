@@ -49,27 +49,30 @@ describe("MCP server", () => {
     const args = {
       name: "park",
       outputDir,
-      width: 160,
-      height: 120,
+      width: 640,
+      height: 400,
       sky: "#87b8d8",
-      ground: { tiles: ["grass", "grass_flowers"], weights: [3, 1], y: 48 },
-      layers: [{ prop: "hills", y: 48, x: 7, repeat: "x" }],
-      placements: [{ prop: "cottage", x: 90, y: 108, flip: true }, { prop: "hills", x: 48, y: 55 }, { prop: "apple_tree", x: 29, y: 98 }],
+      ground: { tiles: ["grass", "grass_flowers"], weights: [3, 1], y: 150 },
+      layers: [{ prop: "hills", y: 160, x: 7, repeat: "x" }],
+      placements: [{ prop: "cottage", x: 420, y: 380, flip: true }, { prop: "hills", x: 150, y: 200 }, { prop: "apple_tree", x: 120, y: 360 }],
       normalMap: true,
     };
     const result = await client.callTool({ name: "compose_scene", arguments: args });
     expect(result.isError).toBeFalsy();
     const out = result.structuredContent as { pngPath: string; tscnPath: string; normalPath: string };
     const image = readPng(out.pngPath);
-    expect([image.width, image.height]).toEqual([160, 120]);
+    expect([image.width, image.height]).toEqual([640, 400]);
     expect([...image.data.subarray(0, 4)]).toEqual([135, 184, 216, 255]);
-    expect(readPng(out.normalPath).width).toBe(160);
+    expect(readPng(out.normalPath).width).toBe(640);
     const scene = readFileSync(out.tscnPath, "utf8");
     expect(scene).toContain('path="res://park_assets/background.png"');
-    expect(scene).toContain("region_rect = Rect2(89, 0, 160, 32)");
+    expect(scene).toContain("region_rect = Rect2(505, 0, 640, 150)");
     expect(scene.match(/type="CanvasTexture"/g)).toHaveLength(3);
-    expect(scene.indexOf("Vector2(29, 98)")).toBeLessThan(scene.indexOf("Vector2(90, 108)"));
+    expect(scene.indexOf("Vector2(120, 360)")).toBeLessThan(scene.indexOf("Vector2(420, 380)"));
     expect(scene).toContain("flip_h = true");
+    // Rendered buildings and foliage get contact shadows on the ground, under all objects.
+    expect(scene.match(/parent="Shadows"/g)).toHaveLength(2);
+    expect(scene.indexOf('[node name="Shadows"')).toBeLessThan(scene.indexOf('[node name="Objects"'));
 
     const again = await client.callTool({ name: "compose_scene", arguments: args });
     expect(again.structuredContent).toEqual(result.structuredContent!);

@@ -14,6 +14,8 @@
     "generate:assets": "bun scripts/generate-assets.ts",
     "generate:building": "bun scripts/buildings/generate.ts",
     "generate:buildings": "bun scripts/buildings/batch.ts",
+    "generate:village": "bun scripts/buildings/village.ts",
+    "readiness": "bun scripts/readiness.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },

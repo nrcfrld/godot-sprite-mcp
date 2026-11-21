@@ -138,6 +138,9 @@ def church_layout(side):
         feet.append(("tower", tower.foundation))
         connection_mesh = box("Masonry wall connection", blender_point(connection.center), blender_point(connection.size), carved_stone, 0)
         bpy.context.view_layer.update()
+        # The connector bridges wall and tower above ground, so instead of snapping it to Z=0
+        # it must touch both: a contact chain from the ground through the nave or the tower.
+        reject_unsupported("wall connection", (*main_volumes, *volumes(tower.objects), *volumes((connection_mesh,))))
         additions = [("tower", volumes(tower.objects)), ("wall connection", volumes((connection_mesh,)))]
         for group, shapes in additions:
             for shape in shapes:
@@ -147,18 +150,25 @@ def church_layout(side):
         active_roof = tower.roof
         cross_surface = "tower"
 
-    # Instantiate a single ornament and reserve only the active roof socket.
+    # Ornament conflict exclusion: try each roof apex (the tower first), relocate the cross to
+    # the first one that is clear, and disable it only when every apex is blocked.
     ornament = capture("Roof cross", roof_cross, grounded=False)
-    cross_socket = roof_apex_socket(apex_bounds(active_roof))
-    ornament.place(cross_socket)
-    ornament_volumes = volumes(ornament.objects)
     blockers = [(group, volume) for group, shapes in groups for volume in shapes]
-    if first_intersection(ornament_volumes, blockers):
+    candidates = [(cross_surface, roof_apex_socket(apex_bounds(active_roof)))]
+    if cross_surface != "main":
+        candidates.append(("main", roof_apex_socket(apex_bounds(main.roof))))
+    cross_socket = None
+    for surface, socket in candidates:
+        ornament.place(socket)
+        ornament_volumes = volumes(ornament.objects)
+        if not first_intersection(ornament_volumes, blockers):
+            cross_surface, cross_socket = surface, socket
+            groups.append(("roof cross", ornament_volumes))
+            break
+    if cross_socket is None:
         for item in (*ornament.objects, ornament.root):
             bpy.data.objects.remove(item, do_unlink=True)
-        cross_surface = cross_socket = None
-    else:
-        groups.append(("roof cross", ornament_volumes))
+        cross_surface = None
 
     # Geometry has its final world transforms. All overlaps across models must
     # be resolved before the renderer or exporter is invoked.

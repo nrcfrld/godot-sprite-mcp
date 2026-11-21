@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readFileSync, readSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { PNG } from "pngjs";
 
@@ -93,4 +93,27 @@ export function compositeOver(dst: RgbaImage, src: RgbaImage): void {
     }
     d[i + 3] = oa;
   }
+}
+
+/** Largest image side the tools will read or write (4096² RGBA ≈ 64 MB per buffer). */
+export const MAX_IMAGE_SIDE = 4096;
+
+/** Reads a PNG's IHDR size and rejects oversized images before decoding them. */
+export function readPngChecked(path: string, maxSide = MAX_IMAGE_SIDE): RgbaImage {
+  const fd = openSync(path, "r");
+  const head = Buffer.alloc(24);
+  try {
+    readSync(fd, head, 0, 24, 0);
+  } finally {
+    closeSync(fd);
+  }
+  if (head.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a" || head.toString("ascii", 12, 16) !== "IHDR") {
+    throw new Error(`Not a PNG file: ${path}`);
+  }
+  const width = head.readUInt32BE(16);
+  const height = head.readUInt32BE(20);
+  if (width > maxSide || height > maxSide) {
+    throw new Error(`Image ${width}x${height} exceeds the ${maxSide}px limit: ${path}`);
+  }
+  return readPng(path);
 }

@@ -182,6 +182,7 @@ async function main() {
       authors: ["Raphael Gonçalves (rgsdev)"],
       licenses: ["CC0"],
       urls: ["https://opengameart.org/content/free-cc0-modular-animated-vector-characters-2d"],
+      changes: "frames cropped, box-filtered from 2048px to 1/5 scale and repacked into sprite sheets by godot-sprite-mcp",
     },
   });
   console.log(`hd_creatures: ${frameCount} frames, ${rows} rows`);

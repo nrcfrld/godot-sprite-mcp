@@ -10,6 +10,7 @@ import {
   formatZodError,
   libraryDir,
   libraryKind,
+  own,
   PalettesFileSchema,
   readJson,
   type Channel,
@@ -19,7 +20,7 @@ import {
 import { compositeOver, createImage, encodePng, parseHex, readPng, type Rgb, type RgbaImage } from "./image.ts";
 import { generateNormalMap } from "./normal.ts";
 import { gradientMap, swapPalette } from "./palette.ts";
-import { buildCreditsMarkdown } from "./sprite.ts";
+import { buildCreditsMarkdown, groupCredits } from "./sprite.ts";
 import { godotResourcePath } from "./tres.ts";
 
 export const DEFAULT_PROPS_LIBRARY = "village";
@@ -37,6 +38,8 @@ export const PropsManifestSchema = z.object({
         description: z.string().optional(),
         /** Optional recolor channel for every prop in the category. */
         channel: ChannelSchema.omit({ follow: true, id: true }).optional(),
+        /** Draw a soft ground shadow under each placed prop so it sits on the ground instead of floating. */
+        contactShadow: z.boolean().default(false),
       }),
     )
     .min(1),
@@ -157,11 +160,14 @@ const propPosition = {
   palette: z.string().min(1).optional(),
 };
 
+/** Largest scene side: a 4096² scene with normals peaks around 0.8 GB of RAM. */
+export const MAX_SCENE_SIDE = 4096;
+
 export const SceneInputSchema = z.object({
   name: z.string().regex(SAFE_NAME),
   outputDir: z.string().min(1),
-  width: z.int().min(1).max(8192),
-  height: z.int().min(1).max(8192),
+  width: z.int().min(1).max(MAX_SCENE_SIDE),
+  height: z.int().min(1).max(MAX_SCENE_SIDE),
   sky: z.union([hexColor, z.object({ top: hexColor, bottom: hexColor })]).optional(),
   ground: z.object({
     tiles: z.array(z.string().regex(SAFE_NAME)).min(1),
@@ -240,7 +246,7 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
 
   const used = new Set<string>();
   const getProp = (id: string) => {
-    const p = lib.props[id];
+    const p = own(lib.props, id);
     if (!p) throw new Error(`Unknown prop "${id}". Use list_scene_props to see available props.`);
     used.add(id);
     return p;
@@ -314,8 +320,9 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
       }
   }
 
-  const scene = createImage(W, H);
-  scene.data.set(background.data);
+  // Encode the background now and draw the scene into the same buffer (saves a full W×H copy).
+  const backgroundPng = encodePng(background);
+  const scene = background;
   const normals = input.normalMap ? createImage(W, H) : null;
   if (normals) {
     const flat = [128, 128, 255, 255];
@@ -347,6 +354,19 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
     }
     return normalCache.get(key)!;
   };
+  // Contact shadows go on the ground first, so no shadow ever darkens another object.
+  const shadowNodes: TscnSpec["shadows"] = [];
+  const shadowImages = new Map<string, RgbaImage>();
+  for (const p of placements) {
+    const prop = getProp(p.prop);
+    if (!lib.manifest.categories.find((c) => c.id === prop.category)?.contactShadow) continue;
+    const shadow = contactShadow(prop.width);
+    const asset = `shadow_w${prop.width}`;
+    shadowImages.set(asset, shadow.image);
+    drawAt(scene, shadow.image, p.x + shadow.ox, p.y + shadow.oy);
+    shadowNodes.push({ asset, x: p.x, y: p.y, ox: shadow.ox, oy: shadow.oy });
+  }
+
   const objectNodes: { asset: string; x: number; y: number; ox: number; oy: number; flip: boolean; z: number }[] = [];
   for (const p of placements) {
     const base = image(p.prop, p.palette);
@@ -375,10 +395,10 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
   }
 
   const assetFiles = new Map<string, { png: string; normal: string | null }>();
-  const writeAsset = (asset: string, img: RgbaImage, withNormal: RgbaImage | null) => {
+  const writeAsset = (asset: string, img: RgbaImage | Uint8Array, withNormal: RgbaImage | null) => {
     if (assetFiles.has(asset)) return;
     const png = join(assetsDir, `${asset}.png`);
-    writeFileSync(png, encodePng(img));
+    writeFileSync(png, img instanceof Uint8Array ? img : encodePng(img));
     let normal: string | null = null;
     if (withNormal) {
       normal = join(assetsDir, `${asset}_normal.png`);
@@ -386,9 +406,10 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
     }
     assetFiles.set(asset, { png, normal });
   };
-  writeAsset("background", background, null);
+  writeAsset("background", backgroundPng, null);
   for (const l of input.layers ?? []) writeAsset(assetName("layer", l.prop, l.palette), image(l.prop, l.palette), null);
   for (const p of placements) writeAsset(assetName("object", p.prop, p.palette), image(p.prop, p.palette), normals ? normalOf(p.prop, p.palette) : null);
+  for (const [asset, img] of shadowImages) writeAsset(asset, img, null);
 
   const tscnPath = join(outputDir, `${input.name}.tscn`);
   writeFileSync(
@@ -399,17 +420,37 @@ export function composeScene(lib: PropsLibrary, input: SceneInput) {
       res: (path) => godotResourcePath(path, outputDir),
       assets: assetFiles,
       layers: layerNodes,
+      shadows: shadowNodes,
       objects: objectNodes,
     }),
   );
 
-  const credits = [...used].sort(byCodeUnit).filter((id) => lib.credits[id]).map((id) => ({ part: `${lib.props[id]!.category}/${id}`, ...lib.credits[id]! }));
-  // One entry per distinct credit (packs usually share a single default credit).
-  const distinct = credits.filter((c, i) => credits.findIndex((d) => JSON.stringify({ ...d, part: "" }) === JSON.stringify({ ...c, part: "" })) === i);
+  // Palette variants each prop was drawn with (explicit or the category default), for the "Changes" note.
+  const variantsUsed = new Map<string, Set<string>>();
+  for (const use of [...(input.layers ?? []), ...(input.placements ?? []), ...(input.ground?.tiles ?? []).map((prop) => ({ prop, palette: undefined }))]) {
+    const variant = use.palette ?? channelOf(lib, lib.props[use.prop]!)?.default;
+    if (!variant) continue;
+    if (!variantsUsed.has(use.prop)) variantsUsed.set(use.prop, new Set());
+    variantsUsed.get(use.prop)!.add(variant);
+  }
+  // Parts sharing one attribution (packs usually have a single default credit) are listed together.
+  const credits = groupCredits(
+    [...used]
+      .sort(byCodeUnit)
+      .filter((id) => lib.credits[id])
+      .map((id) => {
+        const variants = [...(variantsUsed.get(id) ?? [])].sort(byCodeUnit);
+        return {
+          part: `${lib.props[id]!.category}/${id}`,
+          credit: lib.credits[id]!,
+          modified: `${variants.length ? `recolored (${variants.join(", ")}) and ` : ""}placed into ${input.name}.png by godot-sprite-mcp`,
+        };
+      }),
+  );
   let creditsPath: string | null = null;
-  if (distinct.length) {
+  if (credits.length) {
     creditsPath = join(outputDir, `${input.name}_CREDITS.md`);
-    writeFileSync(creditsPath, buildCreditsMarkdown(input.name, `${input.name}.png`, distinct));
+    writeFileSync(creditsPath, buildCreditsMarkdown(input.name, `${input.name}.png`, credits));
   }
 
   return {
@@ -436,12 +477,37 @@ function flipNormals(n: RgbaImage): RgbaImage {
   return out;
 }
 
+/** Peak opacity and tint of contact shadows (cool, dark green so they read as shade on grass). */
+const SHADOW_ALPHA = 120;
+const SHADOW_RGB: Rgb = [24, 36, 30];
+
+/**
+ * Soft elliptical ground shadow for a prop of the given width, centred slightly
+ * behind its bottom-centre anchor. Falloff is (1 - d²)², multiplication only, so the
+ * image is identical on every platform.
+ */
+export function contactShadow(propWidth: number) {
+  const rx = Math.max(4, Math.round(propWidth * 0.46));
+  const ry = Math.max(2, Math.round(propWidth * 0.13));
+  const image = createImage(rx * 2 + 1, ry * 2 + 1);
+  for (let y = -ry; y <= ry; y++)
+    for (let x = -rx; x <= rx; x++) {
+      const d2 = (x * x) / (rx * rx) + (y * y) / (ry * ry);
+      if (d2 >= 1) continue;
+      const q = 1 - d2;
+      image.data.set([SHADOW_RGB[0], SHADOW_RGB[1], SHADOW_RGB[2], Math.round(SHADOW_ALPHA * q * q)], ((y + ry) * image.width + x + rx) * 4);
+    }
+  // Centre sits 40% of the shadow's height above the anchor: mostly under the prop, peeking out in front.
+  return { image, ox: -rx, oy: -ry - Math.round(ry * 0.4) };
+}
+
 interface TscnSpec {
   name: string;
   pixelArt: boolean;
   res: (path: string) => string;
   assets: Map<string, { png: string; normal: string | null }>;
   layers: { asset: string; x: number; y: number; w: number; h: number; repeat: boolean; phase: number }[];
+  shadows: { asset: string; x: number; y: number; ox: number; oy: number }[];
   objects: { asset: string; x: number; y: number; ox: number; oy: number; flip: boolean; z: number }[];
 }
 
@@ -489,6 +555,12 @@ export function buildSceneTscn(spec: TscnSpec): string {
     if (l.repeat) out.push("region_enabled = true", `region_rect = Rect2(${l.phase}, 0, ${l.w}, ${l.h})`);
     out.push("");
   });
+  if (spec.shadows.length) {
+    out.push(`[node name="Shadows" type="Node2D" parent="."]`, "z_index = -4094", "");
+    spec.shadows.forEach((sh, i) => {
+      out.push(`[node name=${q(`Shadow${i + 1}`)} type="Sprite2D" parent="Shadows"]`, `position = Vector2(${sh.x}, ${sh.y})`, `texture = ${texRef.get(sh.asset)}`, "centered = false", `offset = Vector2(${sh.ox}, ${sh.oy})`, "");
+    });
+  }
   out.push(`[node name="Objects" type="Node2D" parent="."]`, "y_sort_enabled = true", "");
   spec.objects.forEach((o, i) => {
     out.push(`[node name=${q(`${o.asset}_${i + 1}`)} type="Sprite2D" parent="Objects"]`);

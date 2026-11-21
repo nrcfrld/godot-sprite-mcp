@@ -30,14 +30,16 @@
         "https://opengameart.org/content/lpc-male-jumping-animation-by-durrani",
         "https://opengameart.org/content/lpc-runcycle-and-diagonal-walkcycle"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/body/bodies/female; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; see details at https://opengameart.org/content/lpc-character-bases"
     },
     "feet/shoes": {
       "title": "LPC Basic Shoes",
       "authors": [
         "JaidynReiman",
-        "Joe White",
-        "Johannes Sjölund (wulax)"
+        "bluecarrot16",
+        "Johannes Sjölund (wulax)",
+        "Joe White"
       ],
       "licenses": [
         "OGA-BY 3.0"
@@ -47,7 +49,8 @@
         "http://opengameart.org/content/lpc-clothing-updates",
         "https://opengameart.org/content/lpc-expanded-socks-shoes"
       ],
-      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/feet/shoes/basic/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, edited for female base by Joe White, edited for v3 base by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman"
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/feet/shoes/basic/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, edited for v3 base by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman; original by wulax, edited for female base by Joe White, edited for v3 base by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman"
     },
     "feet/boots": {
       "title": "LPC Basic Boots",
@@ -63,7 +66,8 @@
         "https://opengameart.org/content/lpc-clothes-and-hair",
         "https://opengameart.org/content/lpc-expanded-socks-shoes"
       ],
-      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/feet/boots/basic/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0; original by Nila122, edited for v3 bases by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman"
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/feet/boots/basic/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0; original by Nila122, edited for male and v3 bases by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman; original by Nila122, edited for v3 bases by bluecarrot16, Jump/Sit/Emote/Run/Revised Combat by JaidynReiman"
     },
     "legs/pants": {
       "title": "LPC Pants",
@@ -85,6 +89,7 @@
         "http://opengameart.org/content/lpc-clothing-updates",
         "https://opengameart.org/content/lpc-expanded-pants"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/pants/thin; original license options: OGA-BY 3.0, GPL 3.0, CC-BY-SA 3.0; original male pants by wulax, edited for female by Joe White, recolors and edits to v3 base by bluecarrot16, teen legs by ElizaWy derived from base, climb/jump/run/sit/emotes/revised combat by JaidynReiman based on ElizaWy's LPC Revised"
     },
     "legs/formal_pants": {
@@ -106,7 +111,8 @@
         "https://opengameart.org/content/lpc-gentleman",
         "https://opengameart.org/content/lpc-expanded-pants"
       ],
-      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/formal/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; Original pants by Stephen Challener (Redshrike), thrust/shoot bases by Wulax, Formal Pants by Bluecarrot16, Female/Thin version by JaidynReiman"
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/formal/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; Original pants by Stephen Challener (Redshrike), thrust/shoot bases by Wulax, Formal Pants by Bluecarrot16, climb/jump/run/sit/emotes/revised combat by JaidynReiman; Original pants by Stephen Challener (Redshrike), thrust/shoot bases by Wulax, Formal Pants by Bluecarrot16, Female/Thin version by JaidynReiman"
     },
     "legs/shorts": {
       "title": "LPC Shorts",
@@ -124,6 +130,7 @@
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
         "https://opengameart.org/content/lpc-expanded-pants"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/shorts/shorts/thin; original license options: OGA-BY 3.0; Original bases by Redshrike, thrust/shoot bases by Wulax, original shorts by ElizaWy, climb/jump/run/sit/emotes/revised combat by JaidynReiman"
     },
     "legs/skirt": {
@@ -141,6 +148,7 @@
       "urls": [
         "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/skirts/plain/thin; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, edited for female base by pvigier, edited for v3 base by bluecarrot16, idle & sit by Ahmad3366, color reduced & female sit/emote by JaidynReiman; animations not available: run"
     },
     "torso/longsleeve": {
@@ -163,6 +171,7 @@
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
         "https://opengameart.org/content/lpc-expanded-simple-shirts"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/torso/clothes/longsleeve/longsleeve/female; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by ElizaWy, edited to v3 bases by bluecarrot16; cleanup and climb/jump/run/sit/emote/revised combat adapted from LPC Revised by JaidynReiman"
     },
     "torso/tshirt": {
@@ -182,6 +191,7 @@
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
         "https://opengameart.org/content/lpc-expanded-simple-shirts"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/torso/clothes/shortsleeve/tshirt/female; original license options: OGA-BY 3.0; original by ElizaWy; spellcast/thrust/shoot/hurt/male adapted from original by JaidynReiman"
     },
     "head/human_female": {
@@ -198,6 +208,7 @@
         "https://opengameart.org/content/",
         "https://opengameart.org/content/lpc-character-bases"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/head/heads/human/female; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original head by Redshrike, tweaks by BenCreating, modular version by bluecarrot16"
     },
     "beard/trimmed": {
@@ -212,6 +223,7 @@
         "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair",
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/beards/beard/trimmed; original license options: OGA-BY 3.0"
     },
     "hair/plain": {
@@ -229,6 +241,7 @@
         "https://opengameart.org/content/ponytail-and-plain-hairstyles",
         "https://opengameart.org/content/lpc-expanded-hair"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/plain/adult; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0"
     },
     "hair/spiked": {
@@ -243,6 +256,7 @@
         "https://opengameart.org/content/eredah-rpg-character-base-48x64-ongoing",
         "https://opengameart.org/content/lpc-hair"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/spiked/adult; original license options: CC-BY 4.0"
     },
     "hair/curly_short": {
@@ -257,6 +271,7 @@
         "https://opengameart.org/content/lpc-hair",
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/curly_short/adult; original license options: OGA-BY 3.0"
     },
     "hair/bob": {
@@ -273,6 +288,7 @@
         "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
         "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/bob/adult; original license options: CC0; Original by bluecarrot16. Edited and animated by ElizaWy."
     },
     "hair/long_straight": {
@@ -290,6 +306,7 @@
         "https://opengameart.org/content/lpc-hair",
         "https://opengameart.org/content/lpc-expanded-hair"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/long_straight/adult; original license options: CC0"
     },
     "hair/afro": {
@@ -303,6 +320,7 @@
       "urls": [
         "https://opengameart.org/content/lpc-hair"
       ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/afro/adult; original license options: CC0"
     }
   }

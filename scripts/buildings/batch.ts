@@ -66,7 +66,7 @@ function sources(root: string) {
 }
 
 function engineSignature(blender: string) {
-  const version = Bun.spawnSync([blender, "--version"]);
+  const version = Bun.spawnSync([blender, "--version"], { timeout: 60_000, killSignal: "SIGKILL" });
   if (version.exitCode !== 0) throw new BuildingError("BLENDER_START_FAILED", "Could not read Blender version");
   const code = [
     ...sources(import.meta.dir),

@@ -94,14 +94,26 @@ interface Definition {
   credits?: { file: string; authors: string[]; licenses: string[]; urls: string[]; notes?: string }[];
 }
 
-const PERMISSIVE = /^(CC0|OGA-BY|CC-BY)(?!-SA)\b/;
+// Attribution-only licenses: plain CC0, OGA-BY or CC-BY followed by a version (rejects -SA, -NC, -ND).
+const PERMISSIVE = /^(CC0|OGA-BY|CC-BY)( \d|$)/;
+// When an entry offers several permissive options, the one we use it under (most permissive first).
+const PREFERENCE = ["CC0", "CC-BY 4.0", "CC-BY 3.0", "OGA-BY 4.0", "OGA-BY 3.0"];
 
-/** Credit entries that cover `path`: the most specific prefix entry, else all entries inside it. */
+/**
+ * Every credit entry that overlaps `path`: entries for the folder itself, any parent
+ * folder (shared base art) and any sub-folder (per-file contributions). All of them
+ * must allow non-copyleft use, and all their authors are credited.
+ */
 function creditsFor(def: Definition, path: string) {
-  const entries = def.credits ?? [];
-  const prefix = entries.filter((c) => path.startsWith(c.file.replace(/\/$/, ""))).sort((a, b) => b.file.length - a.file.length);
-  if (prefix.length) return [prefix[0]!];
-  return entries.filter((c) => c.file.startsWith(path));
+  return (def.credits ?? []).filter((c) => {
+    const f = c.file.replace(/\/$/, "");
+    return path === f || path.startsWith(`${f}/`) || f.startsWith(`${path}/`);
+  });
+}
+
+function chosenLicense(licenses: string[]): string {
+  const ok = licenses.filter((l) => PERMISSIVE.test(l));
+  return [...ok].sort((a, b) => (PREFERENCE.indexOf(a) + 1 || 99) - (PREFERENCE.indexOf(b) + 1 || 99))[0]!;
 }
 
 const defCache = new Map<string, Definition>();
@@ -209,12 +221,12 @@ async function importLibrary(body: "male" | "female") {
       writePng(join(lib, "assets", "parts", folder, `${part}.png`), out);
       zPos ??= Number(def.layer_1?.zPos ?? z * 10);
       imported.push(part);
-      const used = covering.flatMap((c) => c.licenses.filter((l) => PERMISSIVE.test(l)));
       credits[`${spec.id}/${part}`] = {
         title: `LPC ${def.name}`,
         authors: [...new Set(covering.flatMap((c) => c.authors))],
-        licenses: [...new Set(used)],
+        licenses: [...new Set(covering.map((c) => chosenLicense(c.licenses)))],
         urls: [...new Set(covering.flatMap((c) => c.urls))],
+        changes: "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
         notes: [
           `Universal LPC Spritesheet Character Generator: spritesheets/${path}`,
           `original license options: ${[...new Set(covering.flatMap((c) => c.licenses))].join(", ")}`,

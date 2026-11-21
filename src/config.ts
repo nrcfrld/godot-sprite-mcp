@@ -100,6 +100,8 @@ export const CreditSchema = z.object({
   licenses: z.array(z.string()).min(1),
   urls: z.array(z.string()).default([]),
   notes: z.string().optional(),
+  /** How the original art was modified before it entered the library (CC-BY/OGA-BY require saying so). */
+  changes: z.string().optional(),
 });
 
 /** Optional assets/credits.json: attribution per "layer/part" (with an optional fallback for all parts). */
@@ -117,6 +119,14 @@ export type Animation = z.infer<typeof AnimationSchema>;
 export type Manifest = z.infer<typeof ManifestSchema>;
 
 export const RAMP_SHADES = ["outline", "shadow", "base", "highlight"] as const;
+
+/**
+ * Looks up a user-supplied key on a plain object without falling through to the
+ * prototype, so ids like "constructor" or "toString" are treated as unknown.
+ */
+export function own<T>(obj: Record<string, T>, key: string): T | undefined {
+  return Object.hasOwn(obj, key) ? obj[key] : undefined;
+}
 
 export function rampColors(ramp: Ramp): [Rgb, Rgb, Rgb, Rgb] {
   return RAMP_SHADES.map((s) => parseHex(ramp[s])) as [Rgb, Rgb, Rgb, Rgb];
@@ -354,19 +364,23 @@ function resolveVariantRefs(
   ref: string,
   seen: Set<string> = new Set(),
 ): [string, string][] {
-  if (sets[ref]) {
+  const set = own(sets, ref);
+  if (set) {
     if (seen.has(ref)) throw new Error(`Palette set "${ref}" is recursive`);
     seen.add(ref);
-    return sets[ref]!.flatMap((m) => resolveVariantRefs(families, sets, m, seen));
+    return set.flatMap((m) => resolveVariantRefs(families, sets, m, seen));
   }
   const dot = ref.indexOf(".");
   if (dot > 0) {
     const [fid, vid] = [ref.slice(0, dot), ref.slice(dot + 1)];
-    if (families[fid]?.variants[vid]) return [[fid, vid]];
+    const family = own(families, fid);
+    if (family && own(family.variants, vid)) return [[fid, vid]];
   } else {
-    if (families[DEFAULT_FAMILY]?.variants[ref]) return [[DEFAULT_FAMILY, ref]];
-    if (families[ref]) return Object.keys(families[ref]!.variants).map((v) => [ref, v] as [string, string]);
-    const matches = Object.entries(families).filter(([, f]) => f.variants[ref]);
+    const defaults = own(families, DEFAULT_FAMILY);
+    if (defaults && own(defaults.variants, ref)) return [[DEFAULT_FAMILY, ref]];
+    const family = own(families, ref);
+    if (family) return Object.keys(family.variants).map((v) => [ref, v] as [string, string]);
+    const matches = Object.entries(families).filter(([, f]) => own(f.variants, ref));
     if (matches.length === 1) return [[matches[0]![0], ref]];
     if (matches.length > 1) {
       throw new Error(`Palette "${ref}" is ambiguous; use one of ${matches.map(([f]) => `${f}.${ref}`).join(", ")}`);

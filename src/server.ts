@@ -5,6 +5,8 @@ import { z } from "zod";
 import { BatchInput, buildBatch } from "../scripts/buildings/batch.ts";
 import { buildBuilding, BuildingError, BuildingInput } from "../scripts/buildings/builder.ts";
 import { defaultAssetRoot, DEFAULT_LIBRARY, libraryKind, listLibraries, openLibrary } from "./config.ts";
+import { MAX_IMAGE_SIDE } from "./image.ts";
+import { checkOutputDir, checkOutputPng } from "./paths.ts";
 import { composeScene, DEFAULT_PROPS_LIBRARY, listSceneProps, openPropsLibrary, SceneInputSchema } from "./scene.ts";
 import { composeCharacterSprite, listSpriteParts, normalizePixelArt, normalMapFile } from "./sprite.ts";
 
@@ -89,11 +91,11 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
           .optional()
           .describe("Also write <name>_normal.png and wire it into the .tres (CanvasTexture) so Godot 2D lights shade the sprite"),
       },
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async ({ library, ...args }) => {
       try {
-        return ok(composeCharacterSprite(openLibrary(assetRoot, library), args));
+        return ok(composeCharacterSprite(openLibrary(assetRoot, library), { ...args, outputDir: checkOutputDir(args.outputDir) }));
       } catch (e) {
         return fail(e);
       }
@@ -123,11 +125,11 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
       title: "Compose Godot 2D scene",
       description: "Compose a sky, tiled ground, repeating backdrops, and depth-sorted props. Writes a PNG preview and an editable Godot 4 .tscn with textures, optional normal maps, and credits when available.",
       inputSchema: SceneInputSchema.extend({ library: propsLibraryArg }),
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async ({ library, ...args }) => {
       try {
-        return ok(composeScene(openPropsLibrary(assetRoot, library), args));
+        return ok(composeScene(openPropsLibrary(assetRoot, library), { ...args, outputDir: checkOutputDir(args.outputDir) }));
       } catch (e) {
         return fail(e);
       }
@@ -140,11 +142,11 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
       title: "Generate modular building",
       description: "Use local Blender to generate a village house, inn, inn interior, church or kegs. Writes Godot scenes, layout, sprite textures, collision and optional normal maps and GLB.",
       inputSchema: BuildingInput,
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async (input, { signal }) => {
       try {
-        return ok(await buildBuilding(input, undefined, signal));
+        return ok(await buildBuilding({ ...input, outputDir: checkOutputDir(input.outputDir) }, undefined, signal));
       } catch (error) {
         return buildingFailure(error);
       }
@@ -157,11 +159,11 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
       title: "Regenerate a building manifest",
       description: "Build a version-1 manifest of village assets with stable per-ID Godot paths. Skips verified artifacts and reports failures per asset so other assets can finish.",
       inputSchema: BatchInput,
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async ({ manifest, outputDir, jobs }, { signal }) => {
       try {
-        const batch = await buildBatch(manifest, outputDir, jobs, undefined, signal);
+        const batch = await buildBatch(manifest, checkOutputDir(outputDir), jobs, undefined, signal);
         const result = ok(batch);
         return batch.assets.some((asset) => asset.status === "failed") ? { ...result, isError: true } : result;
       } catch (error) {
@@ -180,17 +182,17 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
       inputSchema: {
         library: libraryArg.describe("Asset library whose palettes.json defines paletteId (default \"characters\")"),
         inputPath: z.string(),
-        targetWidth: z.number().int().positive(),
-        targetHeight: z.number().int().positive(),
+        targetWidth: z.number().int().positive().max(MAX_IMAGE_SIDE),
+        targetHeight: z.number().int().positive().max(MAX_IMAGE_SIDE),
         paletteId: z.string().describe("Palette id or palette-set id from palettes.json"),
         outputPath: z.string(),
         alphaThreshold: z.number().int().min(1).max(255).optional().describe("Pixels with alpha below this become transparent (default 128)"),
       },
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async ({ library, ...args }) => {
       try {
-        return ok(normalizePixelArt(openLibrary(assetRoot, library), args));
+        return ok(normalizePixelArt(openLibrary(assetRoot, library), { ...args, outputPath: checkOutputPng(args.outputPath) }));
       } catch (e) {
         return fail(e);
       }
@@ -212,11 +214,11 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
         strength: z.number().positive().max(20).optional().describe("Slope multiplier (default 2)"),
         bevel: z.number().int().positive().max(256).optional().describe("Edge bevel in pixels (default ~1/16 of the frame)"),
       },
-      annotations: { destructiveHint: false, idempotentHint: true },
+      annotations: { destructiveHint: true, idempotentHint: true },
     },
     async (args) => {
       try {
-        return ok(normalMapFile(args));
+        return ok(normalMapFile({ ...args, outputPath: checkOutputPng(args.outputPath) }));
       } catch (e) {
         return fail(e);
       }

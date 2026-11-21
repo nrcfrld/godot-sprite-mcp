@@ -40,6 +40,15 @@ export function normalizeBuilding(input: BuildingRequest) {
   };
 }
 
+/**
+ * Upper bound for a single Blender run (BLENDER_TIMEOUT_MS, default 10 minutes; the slowest
+ * template renders in ~15 s). A hung Blender is killed instead of blocking the MCP call forever.
+ */
+export function blenderTimeoutMs(): number {
+  const value = Number(process.env.BLENDER_TIMEOUT_MS);
+  return Number.isFinite(value) && value > 0 ? value : 600_000;
+}
+
 export function blenderExecutable(override?: string) {
   const app = "/Applications/Blender.app/Contents/MacOS/Blender";
   return override ?? process.env.BLENDER_BIN ?? Bun.which("blender") ?? (existsSync(app) ? app : "blender");
@@ -61,16 +70,25 @@ export async function buildBuilding(input: BuildingRequest, blender = blenderExe
         "--building", building, "--tower", tower ?? "left", "--output", renderPath,
         ...(interior ? ["--interior", interior] : []),
         ...(glb ? ["--glb", mesh] : []),
-      ], { stdout: "pipe", stderr: "pipe", signal });
+      ], { stdout: "pipe", stderr: "pipe", signal, timeout: blenderTimeoutMs(), killSignal: "SIGKILL" });
     } catch (error) {
       throw new BuildingError("BLENDER_START_FAILED", error instanceof Error ? error.message : String(error));
     }
-    const [code, stdout, stderr] = await Promise.all([
-      proc.exited, new Response(proc.stdout).text(), new Response(proc.stderr).text(),
-    ]);
+    // Wait for the process itself, not its pipes: after a timeout kill, a surviving child
+    // process can keep stdout/stderr open long after Blender is gone.
+    const output = Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
+    const code = await proc.exited;
     signal?.throwIfAborted();
+    if (proc.signalCode === "SIGKILL") {
+      output.catch(() => {});
+      throw new BuildingError("BLENDER_TIMEOUT", `Blender did not finish within ${blenderTimeoutMs()} ms (set BLENDER_TIMEOUT_MS to change the limit)`);
+    }
+    const [stdout, stderr] = await output;
     if (code !== 0) {
-      const reason = (stderr + stdout).match(/^BUILDING_LAYOUT_REJECTED: (.+)$/m)?.[1];
+      const output = stderr + stdout;
+      const version = output.match(/BLENDER_VERSION_MISMATCH: (.+)$/m)?.[1];
+      if (version) throw new BuildingError("BLENDER_VERSION_MISMATCH", version);
+      const reason = output.match(/^BUILDING_LAYOUT_REJECTED: (.+)$/m)?.[1];
       throw new BuildingError(reason ? "LAYOUT_REJECTED" : "BLENDER_FAILED",
         reason ?? ((stderr || stdout).trim().slice(-4000) || `Blender exited with status ${code}`));
     }

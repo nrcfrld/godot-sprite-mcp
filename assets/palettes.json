@@ -1,0 +1,24 @@
+{
+  "sourceRamp": { "outline": "#202020", "shadow": "#606060", "base": "#a0a0a0", "highlight": "#e0e0e0" },
+  "palettes": {
+    "skin_light":  { "label": "Light skin",  "outline": "#5a2e2a", "shadow": "#d08b6b", "base": "#f2c3a0", "highlight": "#ffe4cc" },
+    "skin_tan":    { "label": "Tan skin",    "outline": "#4a2618", "shadow": "#a8653f", "base": "#cf8b5e", "highlight": "#e8b186" },
+    "skin_dark":   { "label": "Dark skin",   "outline": "#24120c", "shadow": "#5c3420", "base": "#7e4a2e", "highlight": "#a06a46" },
+    "hair_brown":  { "label": "Brown hair",  "outline": "#2a160c", "shadow": "#5a3218", "base": "#7d4a24", "highlight": "#a8703c" },
+    "hair_black":  { "label": "Black hair",  "outline": "#0c0c14", "shadow": "#1e1e2c", "base": "#323246", "highlight": "#4e4e6a" },
+    "hair_blonde": { "label": "Blonde hair", "outline": "#5c3c10", "shadow": "#b8862c", "base": "#e6be4e", "highlight": "#fbe78e" },
+    "cloth_red":   { "label": "Red cloth",   "outline": "#3c0c14", "shadow": "#8c1c28", "base": "#c8323c", "highlight": "#f06464" },
+    "cloth_blue":  { "label": "Blue cloth",  "outline": "#0c1a3c", "shadow": "#1e3c8c", "base": "#3264c8", "highlight": "#6496f0" },
+    "cloth_green": { "label": "Green cloth", "outline": "#0c2a14", "shadow": "#1e6432", "base": "#32a050", "highlight": "#78d282" },
+    "metal_gold":  { "label": "Gold",        "outline": "#4a3006", "shadow": "#a87414", "base": "#e0b030", "highlight": "#fff08c" }
+  },
+  "sets": {
+    "skins": ["skin_light", "skin_tan", "skin_dark"],
+    "game_master": [
+      "skin_light", "skin_tan", "skin_dark",
+      "hair_brown", "hair_black", "hair_blonde",
+      "cloth_red", "cloth_blue", "cloth_green",
+      "metal_gold"
+    ]
+  }
+}

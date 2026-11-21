@@ -1,0 +1,20 @@
+{
+  "frameWidth": 48,
+  "frameHeight": 48,
+  "columns": 4,
+  "frameCount": 4,
+  "partsDir": "assets/parts",
+  "palettesFile": "assets/palettes.json",
+  "layers": [
+    { "id": "body", "folder": "01_body", "zIndex": 0, "required": true, "swappable": true, "defaultPart": "base", "defaultPalette": "skin_light" },
+    { "id": "pants", "folder": "02_pants", "zIndex": 10, "required": false, "swappable": true, "defaultPalette": "cloth_blue" },
+    { "id": "shirt", "folder": "03_shirt", "zIndex": 20, "required": false, "swappable": true, "defaultPalette": "cloth_red" },
+    { "id": "hair", "folder": "04_hair", "zIndex": 30, "required": false, "swappable": true, "defaultPalette": "hair_brown" },
+    { "id": "accessory", "folder": "05_accessory", "zIndex": 40, "required": false, "swappable": true, "defaultPalette": "metal_gold" }
+  ],
+  "animations": [
+    { "name": "idle", "frames": [0, 1], "fps": 3, "loop": true },
+    { "name": "walk", "frames": [0, 2], "fps": 6, "loop": true },
+    { "name": "action", "frames": [0, 3], "fps": 8, "loop": false }
+  ]
+}

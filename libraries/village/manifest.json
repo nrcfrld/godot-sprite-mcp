@@ -1,0 +1,10 @@
+{
+  "kind": "props",
+  "pixelArt": true,
+  "categories": [
+    { "id": "tiles", "folder": "tiles", "description": "Seamless 16×16 ground tiles" },
+    { "id": "backdrop", "folder": "backdrop", "description": "Horizontally repeating backdrop strips" },
+    { "id": "buildings", "folder": "buildings", "description": "Freestanding village buildings" },
+    { "id": "foliage", "folder": "foliage", "description": "Trees and shrubs" }
+  ]
+}

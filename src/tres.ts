@@ -19,6 +19,10 @@ export interface TresAnimation {
 export interface SpriteFramesSpec {
   /** Path written into ext_resource (res://... or relative to the .tres file). */
   texturePath: string;
+  /** Optional normal map; frames then use a CanvasTexture so 2D lights shade the sprite. */
+  normalPath?: string;
+  /** Texture filter baked into the CanvasTexture (only used with a normal map). */
+  filter?: "nearest" | "linear";
   /** Unique atlas regions; animations reference them by index. */
   frames: TresFrame[];
   animations: TresAnimation[];
@@ -44,17 +48,33 @@ export function buildSpriteFramesTres(spec: SpriteFramesSpec): string {
     if (!spec.frames[f]) throw new Error(`Animation references unknown frame index ${f}`);
   }
   const texId = "1_sheet";
+  const normalId = "2_normal";
   const subId = (f: number) => `AtlasTexture_f${f}`;
-  const loadSteps = 1 + usedFrames.length + 1;
+  const extCount = spec.normalPath ? 2 : 1;
+  const loadSteps = extCount + (spec.normalPath ? 1 : 0) + usedFrames.length + 1;
 
   const out: string[] = [];
   out.push(`[gd_resource type="SpriteFrames" load_steps=${loadSteps} format=3]`, "");
-  out.push(`[ext_resource type="Texture2D" path=${godotString(spec.texturePath)} id="${texId}"]`, "");
+  out.push(`[ext_resource type="Texture2D" path=${godotString(spec.texturePath)} id="${texId}"]`);
+  if (spec.normalPath) out.push(`[ext_resource type="Texture2D" path=${godotString(spec.normalPath)} id="${normalId}"]`);
+  out.push("");
+  let atlasRef = `ExtResource("${texId}")`;
+  if (spec.normalPath) {
+    out.push(
+      `[sub_resource type="CanvasTexture" id="CanvasTexture_sheet"]`,
+      `diffuse_texture = ExtResource("${texId}")`,
+      `normal_texture = ExtResource("${normalId}")`,
+      // CanvasItem.TextureFilter: 1 = nearest, 2 = linear.
+      ...(spec.filter ? [`texture_filter = ${spec.filter === "nearest" ? 1 : 2}`] : []),
+      "",
+    );
+    atlasRef = `SubResource("CanvasTexture_sheet")`;
+  }
   for (const f of usedFrames) {
     const r = spec.frames[f]!;
     out.push(
       `[sub_resource type="AtlasTexture" id="${subId(f)}"]`,
-      `atlas = ExtResource("${texId}")`,
+      `atlas = ${atlasRef}`,
       `region = Rect2(${r.x}, ${r.y}, ${r.w}, ${r.h})`,
       "",
     );

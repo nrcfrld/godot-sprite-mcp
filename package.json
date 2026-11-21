@@ -12,6 +12,8 @@
     "start": "bun src/cli.ts serve",
     "cli": "bun src/cli.ts",
     "generate:assets": "bun scripts/generate-assets.ts",
+    "generate:building": "bun scripts/buildings/generate.ts",
+    "generate:buildings": "bun scripts/buildings/batch.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },

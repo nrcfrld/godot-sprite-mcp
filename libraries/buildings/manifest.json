@@ -1,0 +1,21 @@
+{
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "columns": 4,
+  "frameCount": 4,
+  "partsDir": "assets/parts",
+  "palettesFile": "assets/palettes.json",
+  "layers": [
+    { "id": "ground", "folder": "01_ground", "zIndex": 0, "required": false, "swappable": true, "defaultPalette": "stone_gray" },
+    { "id": "walls", "folder": "02_walls", "zIndex": 10, "required": true, "swappable": true, "defaultPart": "plaster", "defaultPalette": "plaster_cream" },
+    { "id": "roof", "folder": "03_roof", "zIndex": 20, "required": true, "swappable": true, "defaultPart": "gable", "defaultPalette": "roof_terracotta" },
+    { "id": "chimney", "folder": "04_chimney", "zIndex": 25, "required": false, "swappable": true, "defaultPalette": "brick_red" },
+    { "id": "door", "folder": "05_door", "zIndex": 30, "required": false, "swappable": true, "defaultPart": "plank", "defaultPalette": "wood_oak" },
+    { "id": "windows", "folder": "06_windows", "zIndex": 35, "required": false, "swappable": true, "defaultPalette": "wood_dark" },
+    { "id": "decor", "folder": "07_decor", "zIndex": 40, "required": false, "swappable": true, "defaultPalette": "wood_oak" }
+  ],
+  "animations": [
+    { "name": "idle", "frames": [0, 1, 2, 3], "fps": 6, "loop": true },
+    { "name": "still", "frames": [0], "fps": 1, "loop": false }
+  ]
+}

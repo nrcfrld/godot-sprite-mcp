@@ -1,0 +1,257 @@
+{
+  "frameWidth": 256,
+  "frameHeight": 368,
+  "columns": 8,
+  "frameCount": 42,
+  "pixelArt": false,
+  "layers": [
+    {
+      "id": "wing_back",
+      "folder": "01_wing_back",
+      "zIndex": 0,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "wing",
+          "mode": "gradient"
+        }
+      ]
+    },
+    {
+      "id": "hand_back",
+      "folder": "02_hand_back",
+      "zIndex": 10,
+      "required": true,
+      "defaultPart": "hand1",
+      "channels": []
+    },
+    {
+      "id": "foot_back",
+      "folder": "03_foot_back",
+      "zIndex": 20,
+      "required": true,
+      "defaultPart": "foot1",
+      "channels": []
+    },
+    {
+      "id": "body",
+      "folder": "04_body",
+      "zIndex": 30,
+      "required": true,
+      "defaultPart": "body1",
+      "channels": [
+        {
+          "id": "main",
+          "family": "skin",
+          "mode": "gradient",
+          "default": "peach"
+        }
+      ]
+    },
+    {
+      "id": "foot_front",
+      "folder": "05_foot_front",
+      "zIndex": 40,
+      "required": true,
+      "defaultPart": "foot1",
+      "channels": []
+    },
+    {
+      "id": "head",
+      "folder": "06_head",
+      "zIndex": 50,
+      "required": true,
+      "defaultPart": "head1",
+      "channels": [
+        {
+          "id": "main",
+          "family": "skin",
+          "mode": "gradient",
+          "default": "peach",
+          "follow": "body"
+        }
+      ]
+    },
+    {
+      "id": "eyes",
+      "folder": "07_eyes",
+      "zIndex": 60,
+      "required": true,
+      "defaultPart": "eyes1",
+      "channels": []
+    },
+    {
+      "id": "mouth",
+      "folder": "08_mouth",
+      "zIndex": 70,
+      "required": true,
+      "defaultPart": "mouth1",
+      "channels": []
+    },
+    {
+      "id": "hair",
+      "folder": "09_hair",
+      "zIndex": 80,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "hair",
+          "mode": "gradient",
+          "default": "brown"
+        }
+      ]
+    },
+    {
+      "id": "horns",
+      "folder": "10_horns",
+      "zIndex": 90,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "horn",
+          "mode": "gradient",
+          "default": "bone"
+        }
+      ]
+    },
+    {
+      "id": "wing_front",
+      "folder": "11_wing_front",
+      "zIndex": 100,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "wing",
+          "mode": "gradient",
+          "follow": "wing_back"
+        }
+      ]
+    },
+    {
+      "id": "weapon",
+      "folder": "12_weapon",
+      "zIndex": 110,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "gradient",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "hand_front",
+      "folder": "13_hand_front",
+      "zIndex": 120,
+      "required": true,
+      "defaultPart": "hand1",
+      "channels": []
+    }
+  ],
+  "animations": [
+    {
+      "name": "idle",
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    {
+      "name": "walk",
+      "frames": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "name": "roll",
+      "frames": [
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "jump_start",
+      "frames": [
+        19,
+        20
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "jump_end",
+      "frames": [
+        21,
+        22,
+        23
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "fall",
+      "frames": [
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "hit",
+      "frames": [
+        29,
+        30,
+        31
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "death",
+      "frames": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41
+      ],
+      "fps": 10,
+      "loop": false
+    }
+  ]
+}

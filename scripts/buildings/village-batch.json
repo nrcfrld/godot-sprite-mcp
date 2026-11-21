@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "assets": [
+    { "id": "village_house", "building": "house", "normalMap": true, "glb": true },
+    { "id": "village_inn", "building": "inn", "normalMap": true, "glb": true },
+    { "id": "inn_ground", "building": "inn", "interior": "ground", "normalMap": true, "glb": true },
+    { "id": "inn_upper", "building": "inn", "interior": "upper", "normalMap": true, "glb": true },
+    { "id": "village_kegs", "building": "kegs", "normalMap": true, "glb": true },
+    { "id": "chapel", "building": "church", "tower": "none", "normalMap": true, "glb": true },
+    { "id": "church_left", "building": "church", "tower": "left", "normalMap": true, "glb": true },
+    { "id": "church_right", "building": "church", "tower": "right", "normalMap": true, "glb": true }
+  ]
+}

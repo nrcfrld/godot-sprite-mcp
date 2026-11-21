@@ -1,0 +1,398 @@
+{
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "columns": 9,
+  "frameCount": 189,
+  "pixelArt": true,
+  "layers": [
+    {
+      "id": "body",
+      "folder": "01_body",
+      "zIndex": 10,
+      "required": true,
+      "defaultPart": "human",
+      "channels": [
+        {
+          "id": "main",
+          "family": "skin",
+          "mode": "swap",
+          "default": "light"
+        }
+      ]
+    },
+    {
+      "id": "feet",
+      "folder": "02_feet",
+      "zIndex": 15,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "cloth",
+          "mode": "swap",
+          "default": "white"
+        }
+      ]
+    },
+    {
+      "id": "legs",
+      "folder": "03_legs",
+      "zIndex": 20,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "cloth",
+          "mode": "swap",
+          "default": "white"
+        }
+      ]
+    },
+    {
+      "id": "torso",
+      "folder": "04_torso",
+      "zIndex": 35,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "cloth",
+          "mode": "swap",
+          "default": "white"
+        }
+      ]
+    },
+    {
+      "id": "head",
+      "folder": "06_head",
+      "zIndex": 100,
+      "required": true,
+      "defaultPart": "human_male",
+      "channels": [
+        {
+          "id": "main",
+          "family": "skin",
+          "mode": "swap",
+          "follow": "body"
+        },
+        {
+          "id": "eyes",
+          "family": "eye",
+          "mode": "swap",
+          "default": "blue"
+        }
+      ]
+    },
+    {
+      "id": "beard",
+      "folder": "07_beard",
+      "zIndex": 110,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "hair",
+          "mode": "swap",
+          "default": "dark_brown"
+        }
+      ]
+    },
+    {
+      "id": "hair",
+      "folder": "08_hair",
+      "zIndex": 120,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "hair",
+          "mode": "swap",
+          "default": "dark_brown"
+        }
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "name": "idle_up",
+      "frames": [
+        0,
+        1
+      ],
+      "fps": 3,
+      "loop": true
+    },
+    {
+      "name": "idle_left",
+      "frames": [
+        9,
+        10
+      ],
+      "fps": 3,
+      "loop": true
+    },
+    {
+      "name": "idle_down",
+      "frames": [
+        18,
+        19
+      ],
+      "fps": 3,
+      "loop": true
+    },
+    {
+      "name": "idle_right",
+      "frames": [
+        27,
+        28
+      ],
+      "fps": 3,
+      "loop": true
+    },
+    {
+      "name": "walk_up",
+      "frames": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk_left",
+      "frames": [
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk_down",
+      "frames": [
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk_right",
+      "frames": [
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "run_up",
+      "frames": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "name": "run_left",
+      "frames": [
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "name": "run_down",
+      "frames": [
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "name": "run_right",
+      "frames": [
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106
+      ],
+      "fps": 12,
+      "loop": true
+    },
+    {
+      "name": "slash_up",
+      "frames": [
+        108,
+        109,
+        110,
+        111,
+        112,
+        113
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "slash_left",
+      "frames": [
+        117,
+        118,
+        119,
+        120,
+        121,
+        122
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "slash_down",
+      "frames": [
+        126,
+        127,
+        128,
+        129,
+        130,
+        131
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "slash_right",
+      "frames": [
+        135,
+        136,
+        137,
+        138,
+        139,
+        140
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "spellcast_up",
+      "frames": [
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "spellcast_left",
+      "frames": [
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "spellcast_down",
+      "frames": [
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "spellcast_right",
+      "frames": [
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "hurt",
+      "frames": [
+        180,
+        181,
+        182,
+        183,
+        184,
+        185
+      ],
+      "fps": 8,
+      "loop": false
+    }
+  ]
+}

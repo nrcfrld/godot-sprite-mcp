@@ -1,0 +1,24 @@
+{
+  "sourceRamp": { "outline": "#202020", "shadow": "#606060", "base": "#a0a0a0", "highlight": "#e0e0e0" },
+  "palettes": {
+    "leaf_spring": { "label": "Spring leaves", "outline": "#12301a", "shadow": "#2e7a32", "base": "#4caa44", "highlight": "#8cd860" },
+    "leaf_summer": { "label": "Summer leaves", "outline": "#0e2414", "shadow": "#1e5a2a", "base": "#2e7c36", "highlight": "#4ea44a" },
+    "leaf_autumn": { "label": "Autumn leaves", "outline": "#3a1a08", "shadow": "#9a4212", "base": "#d0701e", "highlight": "#f4a83a" },
+    "leaf_cherry": { "label": "Cherry blossom", "outline": "#4a1a2e", "shadow": "#c0608a", "base": "#e890b4", "highlight": "#ffc8dc" },
+    "leaf_pine":   { "label": "Pine needles",  "outline": "#0a1e16", "shadow": "#1a4630", "base": "#276244", "highlight": "#3c8a5c" },
+    "leaf_snow":   { "label": "Snowy",         "outline": "#3a4a5c", "shadow": "#a8bcd0", "base": "#d8e4f0", "highlight": "#ffffff" },
+    "bark_brown":  { "label": "Brown bark",    "outline": "#1e120a", "shadow": "#4a2e1a", "base": "#6a4426", "highlight": "#8e6238" },
+    "bark_birch":  { "label": "Birch bark",    "outline": "#2a2a2a", "shadow": "#9a968a", "base": "#dcd8cc", "highlight": "#fafaf4" },
+    "grass":       { "label": "Grass",         "outline": "#12280c", "shadow": "#2e5c1c", "base": "#46862a", "highlight": "#6eb444" },
+    "dirt":        { "label": "Dirt",          "outline": "#2a1a0e", "shadow": "#6a4a2c", "base": "#8e6a42", "highlight": "#b48e60" },
+    "sand":        { "label": "Sand",          "outline": "#4a3a1c", "shadow": "#b89a5a", "base": "#dcc282", "highlight": "#f4e2aa" },
+    "snow_ground": { "label": "Snow",          "outline": "#4a5a6e", "shadow": "#b4c4d8", "base": "#e0eaf4", "highlight": "#ffffff" }
+  },
+  "sets": {
+    "forest": ["leaf_spring", "leaf_summer", "leaf_autumn", "leaf_pine", "bark_brown", "grass", "dirt"],
+    "all_seasons": [
+      "leaf_spring", "leaf_summer", "leaf_autumn", "leaf_cherry", "leaf_pine", "leaf_snow",
+      "bark_brown", "bark_birch", "grass", "dirt", "sand", "snow_ground"
+    ]
+  }
+}

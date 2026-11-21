@@ -1,0 +1,23 @@
+{
+  "sourceRamp": { "outline": "#202020", "shadow": "#606060", "base": "#a0a0a0", "highlight": "#e0e0e0" },
+  "palettes": {
+    "stone_gray":      { "label": "Gray stone",      "outline": "#2a2a30", "shadow": "#6a6a74", "base": "#9a9aa4", "highlight": "#c8c8d0" },
+    "sandstone":       { "label": "Sandstone",       "outline": "#4a3a20", "shadow": "#a08458", "base": "#c8ac78", "highlight": "#e8d4a4" },
+    "brick_red":       { "label": "Red brick",       "outline": "#3a1410", "shadow": "#7c2e22", "base": "#a8463a", "highlight": "#cc6e5a" },
+    "plaster_cream":   { "label": "Cream plaster",   "outline": "#4a3c2c", "shadow": "#b8a888", "base": "#e0d4b4", "highlight": "#f8f0dc" },
+    "plaster_blue":    { "label": "Blue plaster",    "outline": "#1c2a40", "shadow": "#6e8cb0", "base": "#98b4d4", "highlight": "#c8dcf0" },
+    "wood_oak":        { "label": "Oak wood",        "outline": "#2e1a0c", "shadow": "#6a4222", "base": "#8e5e32", "highlight": "#b4844e" },
+    "wood_dark":       { "label": "Dark wood",       "outline": "#1a0e08", "shadow": "#3e2414", "base": "#583620", "highlight": "#7a4e30" },
+    "roof_slate":      { "label": "Slate roof",      "outline": "#14182a", "shadow": "#34405a", "base": "#4c5c7c", "highlight": "#7086a8" },
+    "roof_terracotta": { "label": "Terracotta roof", "outline": "#3a140a", "shadow": "#8a3a1c", "base": "#b85a2c", "highlight": "#e0844a" },
+    "roof_moss":       { "label": "Mossy roof",      "outline": "#142a14", "shadow": "#2e5a2a", "base": "#46803a", "highlight": "#6ea856" },
+    "grass_lot":       { "label": "Grass lot",       "outline": "#1a3010", "shadow": "#3c6a24", "base": "#5a9234", "highlight": "#86ba52" },
+    "iron":            { "label": "Iron",            "outline": "#101014", "shadow": "#3a3a44", "base": "#5c5c68", "highlight": "#8a8a98" }
+  },
+  "sets": {
+    "town": [
+      "stone_gray", "sandstone", "brick_red", "plaster_cream", "plaster_blue",
+      "wood_oak", "wood_dark", "roof_slate", "roof_terracotta", "roof_moss", "grass_lot", "iron"
+    ]
+  }
+}

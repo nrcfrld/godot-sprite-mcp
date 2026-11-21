@@ -30,7 +30,7 @@ describe("list_sprite_parts", () => {
     expect(info.frameWidth).toBe(48);
     expect(info.frameHeight).toBe(48);
     expect(info.layers.map((l) => l.id)).toEqual(["body", "pants", "shirt", "hair", "accessory"]);
-    expect(info.layers.find((l) => l.id === "hair")!.parts).toEqual(["long", "short"]);
+    expect(info.layers.find((l) => l.id === "hair")!.parts.map((p) => p.id)).toEqual(["long", "short"]);
     expect(info.palettes.map((p) => p.id)).toContain("skin_light");
     expect(info.animations.map((a) => a.name)).toEqual(["idle", "walk", "action"]);
     expect(info.animations[1]!.frames[1]).toEqual({ index: 2, x: 96, y: 0, w: 48, h: 48 });
@@ -98,7 +98,7 @@ describe("compose_character_sprite", () => {
   test("applies palette swaps: no source ramp colors survive, target ramps appear", () => {
     const res = composeCharacterSprite(lib, { ...request, outputDir: tempDir() });
     const colors = colorSet(readPng(res.pngPath));
-    for (const c of rampColors(lib.palettes.sourceRamp)) expect(colors.has(rgbKey(c))).toBe(false);
+    for (const c of rampColors(lib.palettes.sourceRamp!)) expect(colors.has(rgbKey(c))).toBe(false);
     for (const id of Object.values(request.palettes)) {
       const ramp = rampColors(lib.palettes.palettes[id]!);
       expect(ramp.some((c) => colors.has(rgbKey(c)))).toBe(true);

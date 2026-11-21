@@ -24,7 +24,7 @@ export function parseSpriteFramesTres(text: string): ParsedTres {
   }));
   const atlases = new Map<string, { atlas: string; region: [number, number, number, number] }>();
   for (const m of text.matchAll(
-    /^\[sub_resource type="AtlasTexture" id="([^"]+)"\]\natlas = ExtResource\("([^"]+)"\)\nregion = Rect2\(([^)]+)\)$/gm,
+    /^\[sub_resource type="AtlasTexture" id="([^"]+)"\]\natlas = (?:ExtResource|SubResource)\("([^"]+)"\)\nregion = Rect2\(([^)]+)\)$/gm,
   )) {
     const region = m[3]!.split(",").map((v) => Number(v.trim())) as [number, number, number, number];
     atlases.set(m[1]!, { atlas: m[2]!, region });

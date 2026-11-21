@@ -1,0 +1,18 @@
+{
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "columns": 4,
+  "frameCount": 4,
+  "partsDir": "assets/parts",
+  "palettesFile": "assets/palettes.json",
+  "layers": [
+    { "id": "ground", "folder": "01_ground", "zIndex": 0, "required": false, "swappable": true, "defaultPalette": "grass" },
+    { "id": "trunk", "folder": "02_trunk", "zIndex": 10, "required": false, "swappable": true, "defaultPalette": "bark_brown" },
+    { "id": "canopy", "folder": "03_canopy", "zIndex": 20, "required": true, "swappable": true, "defaultPart": "round", "defaultPalette": "leaf_summer" },
+    { "id": "detail", "folder": "04_detail", "zIndex": 30, "required": false, "swappable": false }
+  ],
+  "animations": [
+    { "name": "sway", "frames": [0, 1, 2, 3], "fps": 4, "loop": true },
+    { "name": "still", "frames": [0], "fps": 1, "loop": false }
+  ]
+}

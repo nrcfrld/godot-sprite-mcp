@@ -73,3 +73,44 @@ export function quantizeToPalette(image: RgbaImage, palette: readonly Rgb[], alp
   }
   return { width: image.width, height: image.height, data: out };
 }
+
+/** Integer Rec.601 luma (0..255). */
+export function luma(r: number, g: number, b: number): number {
+  return (r * 77 + g * 150 + b * 29 + 128) >> 8;
+}
+
+/**
+ * Gradient map: replaces each pixel's color by interpolating `target` at the
+ * pixel's luminance, using the luminance of the matching `source` colors as stops.
+ * Alpha (and therefore anti-aliased edges) is preserved. Integer math only.
+ */
+export function gradientMap(image: RgbaImage, source: readonly Rgb[], target: readonly Rgb[]): RgbaImage {
+  if (source.length !== target.length) {
+    throw new Error(`Palette length mismatch: ${source.length} source vs ${target.length} target colors`);
+  }
+  const stops = source
+    .map((c, i) => ({ l: luma(...c), c: target[i]! }))
+    .sort((a, b) => a.l - b.l)
+    .filter((s, i, arr) => i === 0 || s.l !== arr[i - 1]!.l);
+  const lut = new Uint8Array(256 * 3);
+  for (let l = 0; l < 256; l++) {
+    let k = 0;
+    while (k < stops.length - 1 && stops[k + 1]!.l <= l) k++;
+    const a = stops[k]!;
+    const b = stops[Math.min(k + 1, stops.length - 1)]!;
+    const span = b.l - a.l;
+    const t = span <= 0 ? 0 : Math.min(Math.max(l - a.l, 0), span);
+    for (let ch = 0; ch < 3; ch++) {
+      lut[l * 3 + ch] = span <= 0 ? a.c[ch]! : ((a.c[ch]! * (span - t) + b.c[ch]! * t + (span >> 1)) / span) | 0;
+    }
+  }
+  const out = new Uint8Array(image.data);
+  for (let i = 0; i < out.length; i += 4) {
+    if (out[i + 3] === 0) continue;
+    const l = luma(out[i]!, out[i + 1]!, out[i + 2]!);
+    out[i] = lut[l * 3]!;
+    out[i + 1] = lut[l * 3 + 1]!;
+    out[i + 2] = lut[l * 3 + 2]!;
+  }
+  return { width: image.width, height: image.height, data: out };
+}

@@ -4,6 +4,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { BatchInput, buildBatch } from "../scripts/buildings/batch.ts";
 import { buildBuilding, BuildingError, BuildingInput } from "../scripts/buildings/builder.ts";
+import { ObliqueInput, renderObliqueAsset } from "../scripts/oblique/oblique.ts";
 import { defaultAssetRoot, DEFAULT_LIBRARY, libraryKind, listLibraries, openLibrary } from "./config.ts";
 import { MAX_IMAGE_SIDE } from "./image.ts";
 import { checkOutputDir, checkOutputPng } from "./paths.ts";
@@ -166,6 +167,28 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
         const batch = await buildBatch(manifest, checkOutputDir(outputDir), jobs, undefined, signal);
         const result = ok(batch);
         return batch.assets.some((asset) => asset.status === "failed") ? { ...result, isError: true } : result;
+      } catch (error) {
+        return buildingFailure(error);
+      }
+    },
+  );
+
+  server.registerTool(
+    "render_oblique_asset",
+    {
+      title: "Render oblique asset",
+      description:
+        "Render a caller-owned Blender asset script (build(kit), see scripts/oblique/oblique_kit.py) in an oblique " +
+        "three-quarter projection: facade undistorted, verticals vertical, depth drawn up-right. Writes one PNG per " +
+        "component (hinged components such as doors get one frame per angle), optional camera-space normal maps, " +
+        "glow-only emission layers for night lighting, a ground shadow layer and <name>.oblique.json with the shared " +
+        "ground anchor, markers and projected footprints. Deterministic on the pinned Blender version.",
+      inputSchema: ObliqueInput,
+      annotations: { destructiveHint: true, idempotentHint: true },
+    },
+    async (input, { signal }) => {
+      try {
+        return ok(await renderObliqueAsset({ ...input, outputDir: checkOutputDir(input.outputDir) }, undefined, signal));
       } catch (error) {
         return buildingFailure(error);
       }

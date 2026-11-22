@@ -109,6 +109,7 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
 
 - **No External Generative AI:** Never call image generation APIs. All assets must be generated deterministically via headless Blender Python (`bpy`) scripts or local pixel/mesh compositors.
 - **Immutable Camera & Lighting:** Do not alter the global isometric camera angle, orthographic scale, or primary `Sun` light direction/color defined in `scripts/buildings/core/scene_setup.py`. Every rendered asset must share identical perspective and shadow angles.
+- **Oblique renderer is separate:** `render_oblique_asset` (`scripts/oblique/`) renders caller-owned asset scripts with its own sheared orthographic rig (front facade, depth up-right). It never changes or reuses the isometric building camera. Its rig defaults live in `scripts/oblique/oblique.ts` (`ObliqueOptions`); a caller keeps one setting for a whole asset family so every asset shares the same perspective and shadows. Pass materials inside `render_oblique.py` (normal, glow emission, holdout) are technical, not visible paint: the asset scripts themselves still use painted materials only, through `oblique_kit.material` / `glow_material`.
 
 ## 2. Mandatory Architectural Constraints (Blender Scripts)
 

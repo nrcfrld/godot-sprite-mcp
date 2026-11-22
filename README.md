@@ -156,6 +156,7 @@ color (eyes, lenses…) is kept as is. Layers without an explicit palette use th
 | `generate_normal_map` | `inputPath`, `outputPath`, `frameWidth?`, `frameHeight?`, `strength?`, `bevel?` | normal map for 2D lighting from any sprite/sheet |
 | `list_scene_props` | `library?` (defaults to `village`) | prop IDs, dimensions, category palettes and licenses |
 | `compose_scene` | `library?`, `name`, `outputDir`, `width`, `height`, `sky?`, `ground?`, `layers?`, `placements?`, `normalMap?` | PNG preview, editable Godot 4 scene, texture assets, optional normal maps and credits |
+| `render_oblique_asset` | `scene` (absolute `.py` defining `build(kit)`), `name`, `outputDir`, `unitsPerMeter?` (36), `pxPerUnit?` (3), `depth?` ([0.8, 0.4]), `passes?`, `padding?`, sun/fill/world/samples overrides | Blender render in an oblique front-facade projection: one PNG per component (hinged components get one frame per angle), normal maps, glow-only emission layers, a ground shadow layer and `<name>.oblique.json` (shared anchor, markers, projected footprints, sha256). See [Oblique assets](#oblique-assets) |
 
 When `outputDir` is inside a Godot project (a parent has `project.godot`), the `.tres` references the texture as
 `res://…`; otherwise it uses a path relative to the `.tres`, which Godot 4 also resolves.
@@ -291,3 +292,50 @@ The MCP server exposes the same generator via `generate_building_asset`
 (`building`, `outputDir`, optional `name`, `interior`, `tower`, `normalMap`, `glb`) and
 `generate_building_batch` (`manifest`, `outputDir`, optional `jobs`). Set `BLENDER_BIN`
 in the server environment for a custom Blender installation.
+
+## Oblique assets
+
+`render_oblique_asset` renders geometry that lives in **your** project. Write a Python file with a
+`build(kit)` function; `kit` is `scripts/oblique/oblique_kit.py`:
+
+```python
+def build(kit):
+    plaster = kit.material("Plaster", (0.81, 0.65, 0.40), kit.PLASTER)
+    glass = kit.glow_material("Window", (0.10, 0.14, 0.20), glow=(1.0, 0.72, 0.38), strength=8)
+    kit.box("Body", (0, 2, 1.5), (6, 4, 3), plaster)                       # component "body"
+    kit.box("Window", (1.8, -0.01, 1.7), (0.9, 0.04, 0.9), glass, bevel=0)
+    leaf = kit.box("Leaf", (-1.2, -0.06, 1.0), (1.0, 0.06, 1.95), plaster, component="door")
+    kit.component(leaf, "door", hinge=((-1.7, -0.06, 0), (0, 0, 1)), angles=[0, 25, 50, 75, 100])
+    kit.gable_roof("Roof", -3, 3, 0, 4, 3.0, 4.6, 0.18, plaster)           # component "roof"
+    kit.marker("door_threshold", (-1.2, -0.06, 0))
+    kit.footprint("body", [(-3, 0), (3, 0), (3, 4), (-3, 4)])
+```
+
+Model in meters: +X right, +Y depth (away from the viewer), +Z up, standing on `Z = 0` with the ground
+pivot at the origin. The renderer shears the scene (`x += depth[0]*y`, `z += depth[1]*y`) and renders it
+with an orthographic camera looking along +Y, so the facade is undistorted, verticals stay vertical and
+depth goes up and to the right. `sunDirection` is given in render space (x right, y into the image, z up), so
+"front-left above" means the same on screen for any depth axis; shadows land on the sheared ground plane.
+
+Every PNG shares one canvas; `anchor` is the pixel of the ground pivot. Per component:
+
+- `<name>-<component>.png` (or `.<i>.png` per hinge angle): lit color. Other components are hidden from the
+  camera as holdouts (they occlude and cast shadows but stay transparent), so each layer holds only its visible
+  pixels. Hinged components are hidden instead, so an open door never leaves a hole or a frozen shadow.
+- `.normal.png`: camera-space normals, Godot convention (green = up), for `Light2D`.
+- `.emission.png`: only `glow_material` surfaces at strength 1, everything else transparent; the game
+  scales it by `emissionStrength` at night.
+
+Plus `<name>-shadow.png` (ground shadow, alpha only) and `<name>.oblique.json`. Use `depth: [0, 1]` for a
+classic top-down 3/4 ground (terrain tiles). `scripts/oblique/examples/calibration.py` is a test scene.
+
+### Animated oblique assets
+
+An asset script may set module-level `FRAMES = N` and `ANIMATED = ("water",)`. The renderer then
+builds the scene once per frame with `kit.frame` set to 0..N-1: static components render once,
+animated components render every frame (`<name>-water.fNN.png`) with the static parts holding them
+out. Animated assets must fix their canvas with `kit.canvas(left, top, right, bottom)` (projected
+world units around the ground pivot) or `kit.bounds(low, high)` so every frame shares one canvas and
+anchor. Animated components are hidden, not held out, in the static renders, so the static pixels are
+identical in every frame. Loops are seamless when the asset's motion is periodic in `kit.frame / N`.
+

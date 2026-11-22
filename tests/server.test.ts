@@ -20,7 +20,7 @@ describe("MCP server", () => {
     const client = await connect();
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      "compose_character_sprite", "compose_scene", "generate_building_asset", "generate_building_batch", "generate_normal_map", "list_scene_props", "list_sprite_parts", "normalize_pixel_art",
+      "compose_character_sprite", "compose_scene", "generate_building_asset", "generate_building_batch", "generate_normal_map", "list_scene_props", "list_sprite_parts", "normalize_pixel_art", "render_oblique_asset",
     ]);
   });
 

@@ -27,6 +27,21 @@ describe("tool annotations", () => {
   });
 });
 
+describe("client compatibility", () => {
+  test("tool schemas avoid tuple items, which Gemini-based clients (Antigravity) reject", async () => {
+    const { tools } = await (await connect()).listTools();
+    const tuples: string[] = [];
+    const walk = (node: unknown, path: string) => {
+      if (!node || typeof node !== "object") return;
+      const obj = node as Record<string, unknown>;
+      if (Array.isArray(obj.items) || "prefixItems" in obj) tuples.push(path);
+      for (const [key, value] of Object.entries(obj)) walk(value, `${path}.${key}`);
+    };
+    for (const tool of tools) walk(tool.inputSchema, tool.name);
+    expect(tuples).toEqual([]);
+  });
+});
+
 describe("size limits", () => {
   test("oversized targets and scenes are rejected before anything is written", async () => {
     const client = await connect();

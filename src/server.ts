@@ -141,7 +141,7 @@ export function createServer(assetRoot: string = defaultAssetRoot()): McpServer 
     "generate_building_asset",
     {
       title: "Generate modular building",
-      description: "Use local Blender to generate a village house, inn, inn interior, church or kegs. Writes Godot scenes, layout, sprite textures, collision and optional normal maps and GLB.",
+      description: "Use local Blender to generate a village house, produce shop, inn, inn interior, church or kegs. Writes Godot scenes, layout, sprite textures, collision and optional normal maps and GLB.",
       inputSchema: BuildingInput,
       annotations: { destructiveHint: true, idempotentHint: true },
     },

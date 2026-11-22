@@ -224,14 +224,18 @@ a `palette` variant. Keep the generated `<name>_assets/` folder with the `<name>
 
 The building generator uses Blender to render authored geometry, then exports a transparent PNG
 and a Godot SpriteFrames resource through the sprite composer. Templates include a village house,
-Inn & Bar with two separate interiors, kegs, and a church with an optional tower on either side.
+produce shop with street-side stands, Inn & Bar with two separate interiors, kegs, and a church
+with an optional tower on either side.
 
 ```sh
 bun run generate:building --out ../my-game/buildings --name village_church --tower left --normal-map
 bun run generate:building --out ../my-game/buildings --name village_chapel --tower none
 bun run generate:building --building inn --out ../my-game/buildings --normal-map
 bun run generate:building --building house --out ../my-game/buildings --normal-map --glb
+bun run generate:building --building shop --out ../my-game/buildings --normal-map
 ```
+
+For scene composition, the `village` prop library also exposes the cropped sprite as `shop`.
 
 Use `--blender <path>` or `BLENDER_BIN` if Blender is outside `PATH`. The layout uses Y as the vertical
 axis and converts to Blender's Z-up coordinates. The generator measures each foundation to place its

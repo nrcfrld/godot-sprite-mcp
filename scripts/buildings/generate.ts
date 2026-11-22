@@ -1,7 +1,7 @@
 import { parseArgs } from "node:util";
 import { blenderExecutable, buildBuilding, BuildingInput } from "./builder.ts";
 
-const usage = "bun run generate:building --out <dir> [--building church|inn|house|kegs] [--interior ground|upper] [--name <id>] [--tower left|right|none] [--normal-map] [--glb] [--blender <path>]";
+const usage = "bun run generate:building --out <dir> [--building church|inn|house|shop|kegs] [--interior ground|upper] [--name <id>] [--tower left|right|none] [--normal-map] [--glb] [--blender <path>]";
 
 async function main() {
   const { values } = parseArgs({

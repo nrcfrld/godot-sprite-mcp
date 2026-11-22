@@ -22,6 +22,7 @@ const BUILDINGS: Record<string, string[]> = {
   cottage: ["--building", "house"],
   tavern: ["--building", "inn"],
   church: ["--building", "church", "--tower", "right"],
+  shop: ["--building", "shop"],
   kegs: ["--building", "kegs"],
 };
 // Library prop id -> nature.py prop id.

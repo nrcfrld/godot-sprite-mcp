@@ -10,7 +10,7 @@ import { exportLayeredInterior } from "./layered.ts";
 import { publishArtifacts } from "./publish.ts";
 
 export const BuildingOptions = z.strictObject({
-  building: z.enum(["church", "inn", "house", "kegs"]).default("church"),
+  building: z.enum(["church", "inn", "house", "shop", "kegs"]).default("church"),
   interior: z.enum(["ground", "upper"]).optional(),
   tower: z.enum(["left", "right", "none"]).optional(),
   name: z.string().regex(/^[A-Za-z0-9_-]+$/).optional(),

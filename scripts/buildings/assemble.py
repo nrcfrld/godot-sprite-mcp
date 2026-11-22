@@ -10,17 +10,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from blender_render import bpy, box
 from church import belfry, carved_stone, nave, roof_cross, stairs
-from core.constants import LPC_REFERENCE_HEIGHT_METERS, METERS_PER_UNIT
+from core.constants import GLOBAL_DOOR_HEIGHT, GLOBAL_PLINTH_HEIGHT, LPC_REFERENCE_HEIGHT_METERS, METERS_PER_UNIT
 from core.scene_setup import ORTHOGRAPHIC_SCALE, configure_sprite_scene, render_sprite
 from footprints import Footprint, project_geometry
 from house import house
 from inn import BAR_X, BAR_WIDTH, entry_steps, inn, taproom_kegs
 from inn_interior import DECK, floor_plan, interior_footprints
 from layout import (
-    AABB, EPSILON, Point, Volume, attach_stairs, attach_tower, building_sockets,
+    AABB, EPSILON, Point, Volume, attach_stairs, attach_to_side, attach_tower, building_sockets,
     first_intersection, ground_pivot, reject_blocked_clearances, reject_intersections, reject_unsupported,
     roof_apex_socket,
 )
+from shop import DOOR_WIDTH, STALL_X, chimney, light_shopfront, market_shop, produce_stand, shop_steps
 from mathutils import Vector
 from bpy_extras.object_utils import world_to_camera_view
 
@@ -216,6 +217,46 @@ def house_layout():
     }, [("building", main.foundation), ("entry_steps", entry.foundation)]
 
 
+def shop_layout():
+    main = capture("Village produce shop", market_shop)
+    main_volumes = volumes(main.objects)
+    wall = bounds((main.wall,))
+    entry, stair_socket = place_entry(main, main_volumes, shop_steps)
+    groups = [("main", main_volumes), ("stairs", volumes(entry.objects))]
+    feet = [("building", main.foundation), ("entry_steps", entry.foundation)]
+    # The cross-gable caps share a height. Use the front cap as the authored socket.
+    apex = next(obj for obj in main.roof if obj.name == "Gable glazed ridge roll")
+    sockets = building_sockets(wall, bounds((apex,)))
+
+    for side, x, produce in zip(("left", "right"), STALL_X, ((0, 1, 2), (3, 4, 5))):
+        name = f"produce_{side}"
+        stand, origin = place_grounded_front(name, lambda: produce_stand(produce), x, main_volumes)
+        groups.append((name, volumes(stand.objects)))
+        feet.append((name, stand.foundation))
+        sockets[f"{name}_socket"] = origin
+
+    stack = capture("Chimney", chimney)
+    flashing = bounds(tuple(obj for obj in main.roof if obj.name == "Chimney roof flashing"))
+    socket = Point(flashing.center.x, flashing.high.y, flashing.low.z)
+    stack.place(attach_to_side(bounds(stack.objects), socket, "back") + Point(0, socket.y, 0))
+    stack_volumes = volumes(stack.objects)
+    groups.append(("chimney", stack_volumes))
+    reject_intersections(groups)
+    reject_unsupported("Shop chimney", (*main_volumes, *stack_volumes))
+
+    door = AABB(Point(-DOOR_WIDTH/2+0.06, GLOBAL_PLINTH_HEIGHT, stair_socket.z-0.6),
+                Point(DOOR_WIDTH/2-0.06, GLOBAL_PLINTH_HEIGHT+GLOBAL_DOOR_HEIGHT, wall.low.z))
+    reject_blocked_clearances(groups, (Volume("shop entrance", door),))
+    sockets["chimney_socket"] = socket
+    return {
+        "upAxis": "Y", "building": "shop",
+        "sockets": {name: asdict(point) for name, point in sockets.items()},
+        "entrance_socket": asdict(stair_socket),
+        "doorClearance": asdict(door),
+        "doorHeightWorldUnits": GLOBAL_DOOR_HEIGHT,
+    }, feet
+
+
 def keg_layout():
     module = capture("Village kegs", taproom_kegs)
     return {
@@ -385,7 +426,7 @@ def render_interior(assembly, output):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--building", choices=("church", "inn", "house", "kegs"), default="church")
+    parser.add_argument("--building", choices=("church", "inn", "house", "shop", "kegs"), default="church")
     parser.add_argument("--interior", choices=("ground", "upper"))
     parser.add_argument("--tower", choices=("left", "right", "none"), default="left")
     parser.add_argument("--output", type=Path, required=True, help="Destination for the assembled PNG")
@@ -398,7 +439,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     layouts = {
         "church": lambda: church_layout(args.tower), "inn": inn_layout,
-        "house": house_layout, "kegs": keg_layout,
+        "house": house_layout, "shop": shop_layout, "kegs": keg_layout,
     }
     try:
         assembly = inn_interior_layout(args.interior) if args.interior else layouts[args.building]()
@@ -411,6 +452,8 @@ def main():
     else:
         metadata, feet = assembly
         scene = configure_sprite_scene()
+        if args.building == "shop":
+            light_shopfront()
         bpy.context.view_layer.update()
         metadata["geometry"] = project_geometry(footprints_for(feet), 0, lambda p: sprite_point(scene, p))
         metadata["scale"] = scale_report(scene, 0, metadata)

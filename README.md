@@ -1,7 +1,77 @@
 # godot-sprite-mcp
 
-Headless MCP server (stdio) that composes 2D sprite sheets and scenes for Godot 4 using local pixel-buffer operations.
-The same inputs produce byte-identical PNGs, SpriteFrames resources (`.tres`), and scenes (`.tscn`).
+**Make game-ready 2D art for Godot 4 by asking your AI coding assistant, without any generative AI.**
+
+godot-sprite-mcp is an [MCP](https://modelcontextprotocol.io) server: a small local program that AI
+assistants such as Claude Code, Codex and Google Antigravity can call as tools. You describe what you
+need, for example *"a knight in steel plate armour that can walk and run"* or *"a village square with a
+church and an inn"*. The assistant calls the tools, which build the art from a library of hand-made
+parts and write files Godot uses directly: sprite sheets, `SpriteFrames` animations, scenes, normal
+maps and credits.
+
+No image is produced by an AI model. Every pixel comes from licensed source art, or from Blender
+geometry you write, combined by deterministic code. The same request always gives byte-identical
+files, and every asset ships with its licence and attribution.
+
+## How it works
+
+```mermaid
+flowchart LR
+    You["You: 'a knight that<br/>can walk and run'"] --> AI["AI assistant<br/>(Claude Code, Codex,<br/>Antigravity, …)"]
+    AI -- "MCP tool call<br/>(parts + palettes)" --> Server["godot-sprite-mcp"]
+    Libs[("Asset libraries<br/>layered parts, props,<br/>palettes, licences")] --> Server
+    Blender["Blender<br/>(3D-rendered assets only)"] -.-> Server
+    Server --> Files["Files in your Godot project<br/>.png · .tres · .tscn<br/>normal map · CREDITS.md"]
+```
+
+1. **Asset libraries hold the raw material.**
+   - A *sprite library* is a set of layers (body, clothes, hair, armour, helmet, …). Each part is a sprite
+     sheet on a shared grid that already contains every animation frame. For example, the LPC libraries
+     hold 64×64 pixel-art parts imported from the Liberated Pixel Cup.
+   - A *props library* holds individual objects (buildings, trees, ground tiles) for scenes.
+   - Libraries are plain folders with a `manifest.json`. The importers in `scripts/packs/` build them from
+     free asset packs and keep only parts whose licence allows use without share-alike.
+2. **A tool call picks parts and colours.** For example `parts: { "helmet": "greathelm" }` and
+   `palettes: { "helmet": "steel" }`. The `list_sprite_parts` and `list_scene_props` tools tell the
+   assistant what is available.
+3. **The compositor builds the image.**
+   - Parts are stacked in layer order, and each layer is recoloured from its palette: an exact palette
+     swap for pixel art, or a gradient map that keeps soft edges for HD art.
+   - Layers are then blended with integer maths, so results never vary between machines.
+   - Scenes place props on tiled ground with depth sorting and soft contact shadows.
+4. **The exporter writes Godot files.**
+   - Characters become a PNG sprite sheet plus a `SpriteFrames` `.tres`, with one animation per row
+     (`walk_down`, `run_left`, …).
+   - Scenes become a `.tscn` with editable `Sprite2D` nodes.
+   - Optionally, a normal map wired in through a `CanvasTexture`, so Godot's 2D lights shade the art.
+   - A `_CREDITS.md` lists the authors, licences and changes for every part used.
+
+Two tools render 3D geometry in Blender instead of combining 2D parts:
+- `generate_building_asset` renders the built-in village buildings.
+- `render_oblique_asset` renders a geometry script from your own project.
+
+Blender runs at a pinned version with a fixed camera, fixed lighting and painted materials. Its output
+goes through the same exporter.
+
+## What you can make
+
+| Goal | Tool | Output |
+| --- | --- | --- |
+| Animated character (4 directions, or HD) | `compose_character_sprite` | Sprite sheet, `SpriteFrames`, optional normal map, credits |
+| Map or scene from props | `compose_scene` | Baked PNG preview + editable `.tscn` |
+| 2.5D building with interiors | `generate_building_asset`, `generate_building_batch` | Sprite, scene with collision, interiors, optional GLB |
+| Your own 3D asset in an oblique 3/4 view | `render_oblique_asset` | Per-component PNGs, normal, glow and shadow layers, metadata |
+| 2D lighting for existing art | `generate_normal_map` | Normal map PNG |
+| Clean up raw art to your palette | `normalize_pixel_art` | Downscaled, palette-snapped PNG |
+
+Full parameters are in [Tools](#tools).
+
+## Requirements
+
+- [Bun](https://bun.sh) 1.3 or newer to run the server.
+- [Blender](https://www.blender.org) 5.2, only for the building and oblique tools.
+- [Godot](https://godotengine.org) 4 to use the output (verified with 4.7).
+- An MCP client: Claude Code, Codex, Google Antigravity or any other.
 
 ## Examples
 

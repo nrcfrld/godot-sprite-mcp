@@ -110,6 +110,104 @@
           "default": "dark_brown"
         }
       ]
+    },
+    {
+      "id": "feet_armour",
+      "folder": "09_feet_armour",
+      "zIndex": 15,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "legs_armour",
+      "folder": "10_legs_armour",
+      "zIndex": 20,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "torso_armour",
+      "folder": "11_torso_armour",
+      "zIndex": 60,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "arms_armour",
+      "folder": "12_arms_armour",
+      "zIndex": 60,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "shoulders",
+      "folder": "13_shoulders",
+      "zIndex": 65,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "cloth",
+          "mode": "swap",
+          "default": "white"
+        }
+      ]
+    },
+    {
+      "id": "gloves",
+      "folder": "14_gloves",
+      "zIndex": 70,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
+    },
+    {
+      "id": "helmet",
+      "folder": "15_helmet",
+      "zIndex": 130,
+      "required": false,
+      "channels": [
+        {
+          "id": "main",
+          "family": "metal",
+          "mode": "swap",
+          "default": "steel"
+        }
+      ]
     }
   ],
   "animations": [

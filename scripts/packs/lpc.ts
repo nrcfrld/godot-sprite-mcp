@@ -80,6 +80,26 @@ function layersFor(body: "male" | "female"): LayerSpec[] {
     },
     { id: "beard", items: [["beard", "hair/beards/beards_beard.json"], ["trimmed", "hair/beards/beards_trimmed.json"]] },
     { id: "hair", items: hair },
+    // Armour pieces get their own layers: they recolor with the metal palette, not cloth.
+    { id: "feet_armour", items: [["plate_boots", "feet/feet_armour.json"]] },
+    { id: "legs_armour", items: [["plate_legs", "legs/legs_armour.json"]] },
+    {
+      id: "torso_armour",
+      items: [
+        ["plate", "torso/armour/torso_armour_plate.json"],
+        ["leather", "torso/armour/torso_armour_leather.json"],
+        ["legion", "torso/armour/torso_armour_legion.json"],
+      ],
+    },
+    { id: "arms_armour", items: [["plate_arms", "arms/arms_armour.json"]] },
+    { id: "shoulders", items: [["bauldron", "arms/bauldron.json"]] },
+    { id: "gloves", items: [["gloves", "arms/arms_gloves.json"]] },
+    {
+      id: "helmet",
+      items: ["greathelm", "close", "barbuta", "armet", "bascinet", "nasal", "kettle", "sugarloaf", "norman"].map(
+        (h) => [h, `headwear/helmets/helmets/hat_helmet_${h}.json`] as Item,
+      ),
+    },
   ];
 }
 

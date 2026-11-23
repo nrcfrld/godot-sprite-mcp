@@ -297,6 +297,254 @@
       ],
       "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
       "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hair/afro/adult; original license options: CC0"
+    },
+    "feet_armour/plate_boots": {
+      "title": "LPC Armour",
+      "authors": [
+        "Matthew Krohn (makrohn)",
+        "Johannes Sjölund (wulax)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/feet/armour/plate/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, recolors by bigbeargames, edits for v3 base and recolors by bluecarrot16"
+    },
+    "legs_armour/plate_legs": {
+      "title": "LPC Armour",
+      "authors": [
+        "bluecarrot16",
+        "JaidynReiman",
+        "Michael Whitlock (bigbeargames)",
+        "Matthew Krohn (makrohn)",
+        "Johannes Sjölund (wulax)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/legs/armour/plate/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; reduced to 7 colors an adapted to v3 bases by bluecarrot16, climb/jump/sit/emote/run by JaidynReiman; animations not available: run"
+    },
+    "torso_armour/plate": {
+      "title": "LPC Plate",
+      "authors": [
+        "Napsio (Vitruvian Studio)",
+        "JaidynReiman",
+        "bluecarrot16",
+        "Michael Whitlock (bigbeargames)",
+        "Johannes Sjölund (wulax)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-combat-armor-for-women"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/torso/armour/plate/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, recolor by bigbeargames, color reduced to 7 colors and adapted to v3 bases by bluecarrot16, run/jump/sit/climb/revised combat by JaidynReiman, reduced colors to 6 (based on Napsio's Vitruvian)"
+    },
+    "torso_armour/legion": {
+      "title": "LPC Legion",
+      "authors": [
+        "Napsio (Vitruvian Studio)",
+        "JaidynReiman",
+        "bluecarrot16",
+        "Nila122"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-roman-armor"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/torso/armour/legion/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 2.0, GPL 3.0; adapted to v3 bases by bluecarrot16, jump/run/sit/combat and teen by JaidynReiman, color reduction to 6 colors inspired by Napsio (Vitruvian Studio)"
+    },
+    "arms_armour/plate_arms": {
+      "title": "LPC Armour",
+      "authors": [
+        "Michael Whitlock (bigbeargames)",
+        "Matthew Krohn (makrohn)",
+        "Johannes Sjölund (wulax)",
+        "bluecarrot16",
+        "JaidynReiman"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "http://opengameart.org/content/lpc-clothing-updates"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/arms/armour/plate/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; original by wulax, recolors by bigbeargames; adapted to v3 bases and further recolors by bluecarrot16, climb/emote/jump by JaidynReiman; animations not available: run"
+    },
+    "shoulders/bauldron": {
+      "title": "LPC Bauldron",
+      "authors": [
+        "Nila122",
+        "JaidynReiman"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/more-lpc-clothes-and-hair"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/shoulders/bauldron/male; original license options: GPL 2.0, GPL 3.0, OGA-BY 3.0, CC-BY-SA 3.0; Original by Nila122, climb/jump/sit/emote/run by JaidynReiman"
+    },
+    "gloves/gloves": {
+      "title": "LPC Gloves",
+      "authors": [
+        "Michael Whitlock (bigbeargames)",
+        "Matthew Krohn (makrohn)",
+        "Johannes Sjölund (wulax)",
+        "bluecarrot16",
+        "JaidynReiman"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "http://opengameart.org/content/lpc-clothing-updates"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/arms/hands/gloves/male; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; metal gloves by wulax, recolors by bigbeargames, adapted to v3 bases by bluecarrot16, added to expanded animations by JaidynReiman"
+    },
+    "helmet/greathelm": {
+      "title": "LPC Greathelm",
+      "authors": [
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "CC-BY 4.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-helmets",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/greathelm/male; original license options: OGA-BY 3.0, CC-BY 3.0, CC-BY 4.0, GPL 2.0, GPL 3.0"
+    },
+    "helmet/close": {
+      "title": "LPC Close helm",
+      "authors": [
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "CC-BY 4.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-helmets",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/close/male; original license options: OGA-BY 3.0, CC-BY 3.0, CC-BY 4.0, GPL 2.0, GPL 3.0"
+    },
+    "helmet/barbuta": {
+      "title": "LPC Barbuta",
+      "authors": [
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "CC-BY 4.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-helmets",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/barbuta/male; original license options: OGA-BY 3.0, CC-BY 3.0, CC-BY 4.0, GPL 2.0, GPL 3.0"
+    },
+    "helmet/armet": {
+      "title": "LPC Armet",
+      "authors": [
+        "bluecarrot16",
+        "Johannes Sjölund (wulax)",
+        "JaidynReiman"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/armet/adult; original license options: OGA-BY 3.0, CC-BY-SA 3.0, GPL 3.0; previously called helmet/armor, original version by Johannes Sjölund (wulax), adjustments by bluecarrot16, color reduction by JaidynReiman"
+    },
+    "helmet/bascinet": {
+      "title": "LPC Bascinet",
+      "authors": [
+        "bluecarrot16",
+        "ElizaWy",
+        "Sander Frenken (castelonia)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-realistic-helmet-pack",
+        "https://opengameart.org/content/lpc-helmets-mega-pack",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/bascinet/adult; original license options: OGA-BY 3.0, CC-BY-SA 4.0, CC-BY-SA 3.0, GPL 3.0"
+    },
+    "helmet/nasal": {
+      "title": "LPC Nasal helm",
+      "authors": [
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "CC-BY 4.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-helmets",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/nasal/adult; original license options: CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0"
+    },
+    "helmet/sugarloaf": {
+      "title": "LPC Sugarloaf greathelm",
+      "authors": [
+        "bluecarrot16"
+      ],
+      "licenses": [
+        "CC-BY 4.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-helmets",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/sugarloaf/male; original license options: CC-BY 3.0, CC-BY 4.0, OGA-BY 3.0, GPL 2.0, GPL 3.0"
+    },
+    "helmet/norman": {
+      "title": "LPC Norman helm",
+      "authors": [
+        "ElizaWy",
+        "Sander Frenken (castelonia)"
+      ],
+      "licenses": [
+        "OGA-BY 3.0"
+      ],
+      "urls": [
+        "https://opengameart.org/content/lpc-realistic-helmet-pack",
+        "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+      ],
+      "changes": "animation sheets repacked into one 64px grid (one row per animation and direction) by godot-sprite-mcp",
+      "notes": "Universal LPC Spritesheet Character Generator: spritesheets/hat/helmet/norman/adult; original license options: OGA-BY 3.0, CC-BY-SA 4.0, CC-BY-SA 3.0, GPL 3.0"
     }
   }
 }

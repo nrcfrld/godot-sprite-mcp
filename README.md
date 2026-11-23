@@ -3,6 +3,101 @@
 Headless MCP server (stdio) that composes 2D sprite sheets and scenes for Godot 4 using local pixel-buffer operations.
 The same inputs produce byte-identical PNGs, SpriteFrames resources (`.tres`), and scenes (`.tscn`).
 
+## Examples
+
+Everything below is real tool output, regenerated with `bun run examples` (`scripts/examples.ts`).
+The animated previews are scaled 3× with nearest-neighbour sampling; the files a tool writes are the
+originals in [`docs/examples/`](docs/examples).
+
+### A knight soldier with 4-direction movement
+
+> *"Make a knight soldier sprite sheet: steel plate armour, great helm, red shoulder guards, ready to walk and run in Godot."*
+
+An MCP client turns that into one `compose_character_sprite` call. Each part is a layer from the
+`lpc_male` library, and each palette recolours that layer:
+
+```json
+{
+  "library": "lpc_male",
+  "name": "knight",
+  "parts": {
+    "torso": "longsleeve", "legs": "pants", "feet_armour": "plate_boots", "torso_armour": "plate",
+    "shoulders": "bauldron", "gloves": "gloves", "helmet": "greathelm"
+  },
+  "palettes": {
+    "torso": "navy", "legs": "charcoal", "torso_armour": "steel", "feet_armour": "steel",
+    "gloves": "iron", "helmet": "steel", "shoulders": "maroon"
+  },
+  "outputDir": "/absolute/path/to/my-game/characters",
+  "normalMap": true
+}
+```
+
+The same call from the CLI:
+
+```sh
+bun src/cli.ts compose --library lpc_male --name knight --out ./characters --normal-map \
+  --part torso=longsleeve --part legs=pants --part feet_armour=plate_boots --part torso_armour=plate \
+  --part shoulders=bauldron --part gloves=gloves --part helmet=greathelm \
+  --palette torso=navy --palette legs=charcoal --palette torso_armour=steel --palette feet_armour=steel \
+  --palette gloves=iron --palette helmet=steel --palette shoulders=maroon
+```
+
+Walk (down, left, right, up):
+
+![Knight walking in four directions](docs/examples/knight-walk.png)
+
+Run:
+
+![Knight running in four directions](docs/examples/knight-run.png)
+
+Idle:
+
+![Knight idling in four directions](docs/examples/knight-idle.png)
+
+The call writes four files ([see them](docs/examples/knight)):
+
+| File | What it is |
+| --- | --- |
+| `knight.png` | 576×1344 sprite sheet: 64×64 frames, one row per animation and direction |
+| `knight_frames.tres` | Godot 4 `SpriteFrames` with 21 animations: `idle_*`, `walk_*`, `run_*`, `slash_*`, `spellcast_*` (× `up`/`left`/`down`/`right`) and `hurt` |
+| `knight_normal.png` | Normal map, wired into the `.tres` through a `CanvasTexture` so `PointLight2D` shades the sprite |
+| `knight_CREDITS.md` | Authors, licences and changes for every LPC part used — ship it with your game |
+
+In Godot, assign the `.tres` to an `AnimatedSprite2D` and play an animation:
+
+```gdscript
+$AnimatedSprite2D.sprite_frames = load("res://characters/knight_frames.tres")
+$AnimatedSprite2D.play("walk_down")
+```
+
+### Same parts, different palettes
+
+Swapping palettes recolours the same parts without new art. From left: steel, gold, copper and iron:
+
+![Four knights with different armour palettes](docs/examples/knight-variants.png)
+
+### Normal maps for 2D lighting
+
+`normalMap: true` (or the `generate_normal_map` tool for any existing sprite) derives a normal map from
+each frame, so Godot's 2D lights give the sprite shape and rim light:
+
+![Knight frame next to its generated normal map](docs/examples/knight-normal.png)
+
+### HD 2D character
+
+The `hd_creatures` library composes CC0 vector parts at 256 px and recolours them with gradient maps,
+which keep the soft edges (`palettes: { "body": "demon", "horns": "obsidian", "wing_back": "bat" }`):
+
+![HD imp walking](docs/examples/imp-walk.png)
+
+### Scene composition
+
+`compose_scene` places props from a props library on a canvas — tiled ground, a repeating backdrop and
+depth-sorted objects with contact shadows — and writes both a baked PNG and an editable Godot `.tscn`:
+
+![Village scene composed from props](docs/examples/village-scene.png)
+
 ## Setup
 
 ```sh
@@ -85,9 +180,14 @@ individual PNGs for composing scenes. Use `library` (CLI: `--library`) to select
 | Library | Style | Frame | Source art | License |
 | --- | --- | --- | --- | --- |
 | `hd_creatures` | HD 2D (vector, soft edges) | 256×368, 42 frames: idle, walk, roll, jump, fall, hit, death | [rgsdev modular animated characters](https://opengameart.org/content/free-cc0-modular-animated-vector-characters-2d) | CC0 |
-| `lpc_male`, `lpc_female` | Modern pixel art, 4 directions | 64×64: idle, walk, run, slash, spellcast (×4 dirs), hurt | [Universal LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator) | OGA-BY / CC-BY / CC0 — attribution required, auto-generated |
+| `lpc_male`, `lpc_female` | Modern pixel art, 4 directions: bodies, clothes, hair, plate armour, helmets | 64×64: idle, walk, run, slash, spellcast (×4 dirs), hurt | [Universal LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator) | OGA-BY / CC-BY / CC0 — attribution required, auto-generated |
 | `characters`, `buildings`, `scenery` | Procedural placeholders | 48 / 96 / 64 px | `scripts/art/` | — |
 | `village` | Blender-rendered scene props (buildings, trees, shrubs, rocks) + HD tiles | Individual PNGs | `scripts/buildings/village.ts` (`bun run generate:village`) | — |
+
+LPC armour parts sit on their own layers (`feet_armour`, `legs_armour`, `torso_armour`, `arms_armour`,
+`shoulders`, `gloves`, `helmet`) and recolour with the metal palette (`steel`, `iron`, `silver`, `gold`, `copper`,
+`bronze`, `brass`, `ceramic`). Upstream `plate_legs` and `plate_arms` have no run animation, so prefer
+`pants`/`longsleeve` under `torso_armour` for characters that run.
 
 **Cinematic pixel art** = any library + `normalMap: true` (or the `generate_normal_map` tool). The `.tres` then
 uses a `CanvasTexture` with the normal map, so `PointLight2D` / `DirectionalLight2D` shade the sprite. Pair it with

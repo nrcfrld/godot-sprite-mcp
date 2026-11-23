@@ -16,6 +16,7 @@
     "generate:buildings": "bun scripts/buildings/batch.ts",
     "generate:village": "bun scripts/buildings/village.ts",
     "readiness": "bun scripts/readiness.ts",
+    "examples": "bun scripts/examples.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
